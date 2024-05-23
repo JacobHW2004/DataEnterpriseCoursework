@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\commandchecker\commandchecker\concurrentutilities\Sleeper\Private\Sleeper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\commandchecker\commandchecker\concurrentutilities\Sleeper\Public\Sleeper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\commandchecker\commandchecker\concurrentutilities\Sleeper\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{65E5AC0C-E12E-332B-B938-B1E69B408D0A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9EA73EDC-8EDC-39BA-8E15-62F6E5A61003}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
