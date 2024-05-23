@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\FloatEqualityCheckerTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIFeetPerMinuteTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIFootTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIGForceTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIKnotTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIMachTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIMillibarTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIMillimeterTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSINauticalMileTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSITests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIUnitTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\commandchecker\commandchecker\nsi-units\Tests\NSIUnitlessTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\commandchecker\commandchecker\nsi-units\Tests\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9EA73EDC-8EDC-39BA-8E15-62F6E5A61003}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
