@@ -65,9 +65,6 @@ function(business_logic Component)
         
         target_link_libraries(${Component} PUBLIC SIunits) 
         target_link_libraries(${Component} PUBLIC Topics) 
-        if (TARGET NSIunits)
-          target_link_libraries(${Component} PUBLIC NSIunits) 
-        endif()        
 
         set_target_properties (${Component} PROPERTIES FOLDER Components)
     endif()
@@ -95,33 +92,14 @@ function(lca_target Component)
 
     file(GLOB lca_sources CONFIGURE_DEPENDS LCAMessaging/*.h
                                             LCAMessaging/*.cpp)
-                  
-    if(NOT DEFINED LCA_LIBRARY_TYPE)
-        message(WARNING "LCA_LIBRARY_TYPE not specified. Defaulted to \"SHARED\"")
-        set(LCA_LIBRARY_TYPE "SHARED")
-    endif()
 
-    # Build messaging layer as static or shared lib
-    if(${LCA_LIBRARY_TYPE} STREQUAL "SHARED")
-        add_library (${ContainerName}_${Component}LCA SHARED ${lca_sources}) 
-    elseif(${LCA_LIBRARY_TYPE} STREQUAL "STATIC")
-        add_library (${ContainerName}_${Component}LCA STATIC ${lca_sources})
-    endif()
+    add_library (${ContainerName}_${Component}LCA SHARED ${lca_sources}) 
     
     target_link_libraries(${ContainerName}_${Component}LCA PUBLIC ${Component})
     target_link_libraries(${ContainerName}_${Component}LCA PUBLIC ${ContainerName}_Fabric)
 
     target_link_libraries (${ContainerName}_${Component}LCA PRIVATE ${ContainerName}_Container) # For LCA Container Context Instance
     target_link_libraries (${ContainerName}_${Component}LCA PRIVATE ${ContainerName}_Logging) # For LCA Logging Context Instance
-    target_link_libraries (${ContainerName}_${Component}LCA PRIVATE ${ContainerName}_Schedule) # For LCA Scheduler Context Instance
-
-    # For static builds link the deployment (if it exists) to the run function
-    if(${LCA_LIBRARY_TYPE} STREQUAL "STATIC")
-        if(TARGET ${ContainerName}_Deployment)
-            target_include_directories(${ContainerName}_Deployment PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/LCAMessaging)
-            target_link_libraries(${ContainerName}_Deployment PRIVATE ${ContainerName}_${Component}LCA)
-        endif()
-    endif()
     
     # LCA requires components define EXPORT (I think?)
     target_compile_definitions(${ContainerName}_${Component}LCA PRIVATE EXPORT) 
@@ -139,30 +117,12 @@ function(lca_target_minimum_links Component)
     file(GLOB lca_sources CONFIGURE_DEPENDS LCAMessaging/*.h
                                             LCAMessaging/*.cpp)
 
-    if(NOT DEFINED LCA_LIBRARY_TYPE)
-        message(WARNING "LCA_LIBRARY_TYPE not specified. Defaulted to \"SHARED\"")
-        set(LCA_LIBRARY_TYPE "SHARED")
-    endif()
-
-    # Build messaging layer as static or shared lib
-    if(${LCA_LIBRARY_TYPE} STREQUAL "SHARED")
-        add_library (${ContainerName}_${Component}LCA SHARED ${lca_sources}) 
-    elseif(${LCA_LIBRARY_TYPE} STREQUAL "STATIC")
-        add_library (${ContainerName}_${Component}LCA STATIC ${lca_sources})
-    endif()
-
+    add_library (${ContainerName}_${Component}LCA SHARED ${lca_sources}) 
+    
     target_link_libraries(${ContainerName}_${Component}LCA PUBLIC ${Component})
-    target_link_libraries(${ContainerName}_${Component}LCA PUBLIC ${ContainerName}_Fabric ${ContainerName}_Logging ${ContainerName}_Schedule)
+    target_link_libraries(${ContainerName}_${Component}LCA PUBLIC ${ContainerName}_Fabric ${ContainerName}_Logging)
 
     target_include_directories(${ContainerName}_${Component}LCA PRIVATE ${LCA_DIR}/ContainerFramework)
-
-    # For static builds link the deployment (if it exists) to the run function
-    if(${LCA_LIBRARY_TYPE} STREQUAL "STATIC")
-        if(TARGET ${ContainerName}_Deployment)
-            target_include_directories(${ContainerName}_Deployment PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/LCAMessaging)
-            target_link_libraries(${ContainerName}_Deployment PRIVATE ${ContainerName}_${Component}LCA)
-        endif()
-    endif()
 
     # LCA requires components define EXPORT (I think?)
     target_compile_definitions(${ContainerName}_${Component}LCA PRIVATE EXPORT) 
@@ -182,9 +142,6 @@ function(add_catch_test TestName Component Label)
 	target_link_libraries (${TestName} PRIVATE Catch2)        # link to the testing library
 	target_link_libraries (${TestName} PRIVATE ${Component})  # link to the business logic to be tested
     target_compile_definitions(${TestName} PRIVATE CATCH_CONFIG_CONSOLE_WIDTH=500) # To stop long scenario names breaking vscode Test Explorer
-    
-    #Ensure that the results directory exists
-    file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/results/)
     
     # Add test to CTest. Define the command used to run the test (catch flags)
     # Catch2 flag info: https://github.com/catchorg/Catch2/blob/master/docs/command-line.md
