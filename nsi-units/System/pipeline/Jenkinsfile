@@ -1,0 +1,29 @@
+node("master")
+{
+    accessParentProject = "TeamBacchus"
+    accessChildProject = "nsi-units"
+    polyspace_home = "${env.POLYSPACE_DESKTOP_PATH}"
+    checkoutCode()
+    entrypoints = load "${env.PHOENIX_LIBRARIES}\\${env.PHOENIX_VERSION}\\Jenkins\\entrypoints.groovy"
+    
+    def runUnitTests = true // Optional: If this parameter is omitted, it defaults to true.
+    
+    // Mandatory: Point to the directory containing test_discovery_config.json
+    def configDefinitionPath = "Config\\FeatureTesting"
+
+    entrypoints.cleanGeneratedFiles()
+    entrypoints.runPipelineBuild("",runUnitTests)
+    //entrypoints.buildAndRunFeatureTests(configDefinitionPath)
+}
+
+////////////////////////////////////////////////////////////////////////////////
+def checkoutCode()
+{
+    // Must be hardcoded here as we cannot load from the pipeline repository
+    // until the code is checked out
+
+    stage("Checkout Code")
+    {
+        checkout scm
+    }
+}
