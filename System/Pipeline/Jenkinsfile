@@ -1,0 +1,47 @@
+node("master")
+{
+  accessParentProject = "TeamBacchus"
+  accessChildProject = "WeaponSystemTaskRouter"
+  polyspace_home = "${env.POLYSPACE_DESKTOP_PATH}"
+  withEnv(["PHOENIX_VERSION=v5.0.0", "POLYSPACE_LATEST_PATH=${polyspace_home}"])
+  {
+    entrypoints = load "${env.PHOENIX_LIBRARIES}\\${env.PHOENIX_VERSION}\\Jenkins\\entrypoints.groovy"
+    
+    def runUnitTests = true // Optional: If this parameter is omitted, it defaults to true.
+
+    checkoutCode()
+    entrypoints.cleanGeneratedFiles()
+    entrypoints.runPipelineBuild("",runUnitTests)
+
+    // Run on PR, Develop or Master
+    if (env.CHANGE_ID || env.BRANCH_NAME == "develop" || env.BRANCH_NAME == "master")
+    {
+      //Param1: polyspaceExcludes, Param2: polyspaceIncludes, Param3: additionalOptions
+      //Param4: uploadToAccess, Param5: accessParentProject, Param6: accessChildProject - Access Server not Currently available.
+      //Param7: server, Param8: resultsPath, Param9: format
+      entrypoints.performBugFinderAnalysis(
+         "PolyspaceExcludes.json", "PolyspaceIncludes.json", "BugFinderAdditionalOptions.txt",
+        false, accessParentProject, accessChildProject, "BugFinder", "PDF", "", false)
+      entrypoints.recordBugFinderResults(accessChildProject)
+    }
+
+    // Copy static analysis results when running develop to the webserver
+    if (env.BRANCH_NAME == "develop") {
+			entrypoints.copyStaticAnalysisResultsToWebServer(accessChildProject)
+      entrypoints.copyCoverageToWebServer(accessChildProject)
+      entrypoints.generateDocumentation(accessChildProject, "DoxygenIncludes.txt")
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+def checkoutCode()
+{
+    // Must be hardcoded here as we cannot load from the pipeline repository
+    // until the code is checked out
+
+    stage("Checkout Code")
+    {
+        checkout scm
+    }
+}
