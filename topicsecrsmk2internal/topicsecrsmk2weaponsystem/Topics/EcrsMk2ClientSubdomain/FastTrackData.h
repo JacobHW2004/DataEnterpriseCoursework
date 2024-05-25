@@ -1,0 +1,1019 @@
+#ifndef FAST_TRACK_DATA_TRACK_H
+#define FAST_TRACK_DATA_TRACK_H
+
+#include "Fabric/Utils/LCA_Macros.h"
+
+#include "SIRadian.h"
+#include "SIRadianPerSecond.h"
+#include "FloatEqualityChecker.h"
+#include "SIMeter.h"
+#include "SIMeterPerSecond.h"
+#include "SIMeterPerSecondSquared.h"
+#include "SIRadianPerSecondSquared.h"
+#include "SIDecibel.h"
+#include "SISecond.h"
+
+namespace Topics
+{
+    namespace FastTrackData
+    {  
+        using floatChk = SI::floatEqualityChecker;
+
+        enum class RDRT_XX_TRACK_DATA_COND_ENUM : uint8_t
+        {
+            NO_TRACK = 0x03,
+            NEW_TRACK = 0x06,
+            EXISTING_TRACK_TIME = 0x09,
+            EXISTING_TRACK = 0x0C
+        };
+
+        enum class RDRT_XX_TRACK_TYPE_ENUM : uint8_t
+        {
+            RADAR_TRACK = 0x00,
+            ATR_TRACK = 0x01
+        };
+
+        enum class RDRT_R_XX_REALM_ENUM : uint8_t
+        {
+            UNKNOWN = 0x00,
+            AIR = 0x01,
+            SURFACE_INDETERMINATE = 0x02,
+            SURFACE_LAND = 0x03,
+            SURFACE_SEA = 0x04
+        };
+
+        enum class RDRT_R_XX_TRACK_UPDATE_COUNTER_ENUM : uint8_t
+        {
+            UPDATED = 0x00,
+            EXTRAPOLATED_1 = 0x01,
+            EXTRAPOLATED_2 = 0x02,
+            EXTRAPOLATED_MORE = 0x03
+        };
+
+        enum class RDRT_R_XX_DATA_TYPE_ENUM : uint8_t
+        {
+            KR = 0x00,
+            NORMAL = 0x01
+        };
+
+        enum class RDRT_R_XX_LAST_TGT_TYPE_ENUM : uint8_t
+        {
+            PLOT = 0x00,
+            SPOKE = 0x01
+        };
+
+        enum class RDRT_R_XX_TYPE_TRANS_CTRL_ENUM : uint8_t
+        {
+            GLOBAL_TRANS_CONTROL = 0x00,
+            LOCAL_TRANS_CONTROL = 0x01,
+            SET_JAM = 0x02,
+            SET_CLEAR = 0x03
+        };
+
+        enum class RDRT_R_XX_CLEAR_TO_JAM_ENUM : uint8_t
+        {
+            ALLOWED = 0x00,
+            INHIBITED = 0x01
+        };
+
+        enum class RDRT_R_XX_JAM_TO_CLEAR_ENUM : uint8_t
+        {
+            ALLOWED = 0x00,
+            INHIBITED = 0x01
+        };
+
+        enum class RDRT_R_XX_RAPID_ATT_STATUS_ENUM : uint8_t
+        {
+            NOT_RAPID = 0x00,
+            RAPID = 0x01
+        };
+
+        enum class RDRT_R_XX_GUN_STATUS_ENUM : uint8_t
+        {
+            NO_GUN = 0x00,
+            GUN_IN_USE = 0x01
+        };
+
+        enum class RDRT_R_XX_TASK_VALUE_CONDITION_ENUM : uint8_t
+        {
+            NORMAL = 0x00,
+            INCONSISTENT = 0x01
+        };
+
+        enum class RDRT_R_XX_JAM_ID_CODE_VALID_ENUM : uint8_t
+        {
+            INVALID = 0x00,
+            VALID = 0x01
+        };
+
+        enum class RDRT_R_XX_JAM_ID_CODE_TYPE_1_ENUM : uint8_t
+        {
+            CONTINUOUS_JAMMING = 0x00,
+            INTERMITTENT_JAMMING = 0x01
+        };
+
+        enum class RDRT_R_XX_JAM_ID_CODE_TYPE_2_ENUM : uint8_t
+        {
+            MAIN_BEAM_JAMMING = 0x00,
+            SIDELOBE_JAMMING = 0x01
+        };
+
+        enum class RDRT_R_XX_JAM_ID_CODE_TYPE_3_ENUM : uint8_t
+        {
+            JID_TECH1 = 0x00,
+            JID_TECH2 = 0x01
+        };
+
+        enum class RDRT_R_XX_CONVERGENCE_ENUM : uint8_t
+        {
+            NOT_CONVERGED = 0x00,
+            CONVERGED = 0x01
+        };
+
+        enum class RDRT_R_XX_ERB_KR_DERIVED_ENUM : uint8_t
+        {
+            KR_DEFAULT = 0x00,
+            KR_DERIVED = 0x01
+        };
+
+        enum class RDRT_R_XX_USING_TS_ENUM : uint8_t
+        {
+            NOT_USED = 0x00,
+            USED = 0x01
+        };
+
+        enum class RDRT_R_XX_MANOEUVRE_CD_ENUM : uint8_t
+        {
+            NOT_MANOEUVRING = 0x00,
+            MANOEUVRE_CLIMB = 0x01,
+            MANOEUVRE_DIVE = 0x02
+        };
+
+        enum class RDRT_R_XX_MANOEUVRE_LR_ENUM : uint8_t
+        {
+            NOT_MANOEUVRING = 0x00,
+            MANOEUVRE_LEFT = 0x01,
+            MANOEUVRE_RIGHT = 0x02
+        };
+
+        enum class RDRT_R_XX_KR_OWN_MANOEUVRE_REQ_ENUM : uint8_t
+        {
+            NO_MANOEUVRE_REQ = 0x00,
+            MANOEUVRE_REQ = 0x01
+        };
+
+        enum class RDRT_R_XX_TASK_VALUE_STATUS_ENUM : uint8_t
+        {
+            TV_DES_ACHIEVED = 0x00,
+            TV_DES_NOT_ACHIEVED_RES_LIM = 0x01,
+            TV_DES_NOT_ACHIEVED_EXTERNAL = 0x02,
+            TV_DES_NOT_ACHIEVED_RF_INTEROP = 0x03,
+            TV_DES_NOT_ACHIEVED_BEING_JAMMED = 0x04,
+            TV_DES_NOT_ACHIEVED_EPM_ACTIVE = 0x05,
+            TV_DES_NOT_ACHIEVED_SYS_DEGRADED = 0x06,
+            TV_DES_NOT_ACHIEVED_NOTCHING = 0x07,
+            TV_MIN_ACHIEVED = 0x08,
+            TV_MIN_NOT_ACHIEVED_RES_LIM = 0x09,
+            TV_MIN_NOT_ACHIEVED_EXTERNAL = 0x0A,
+            TV_MIN_NOT_ACHIEVED_RF_INTEROP = 0x0B,
+            TV_MIN_NOT_ACHIEVED_BEING_JAMMED = 0x0C,
+            TV_MIN_NOT_ACHIEVED_EPM_ACTIVE = 0x0D,
+            TV_MIN_NOT_ACHIEVED_SYS_DEGRADED = 0x0E,
+            TV_MIN_NOT_ACHIEVED_NOTCHING = 0x0F
+        };
+
+        enum class RDRT_R_XX_REC_TRK_DEL_ENUM : uint8_t
+        {
+            NO_DELETION = 0x00,
+            TDEL = 0x01,
+            QDEL = 0x02,
+            NREDEL = 0x03,
+            PAE = 0x04
+        };
+
+        enum class RDRT_R_XX_NCI_VALID_ENUM : uint8_t
+        {
+            INVALID = 0x00,
+            VALID = 0x01
+        };
+
+        enum class RDRT_R_XX_NCI_TECHNIQUE_ENUM : uint8_t
+        {
+            NCI_JEM = 0x00,
+            NCI_RDI = 0x01,
+            NCI_HRR = 0x02,
+            NCI_TECH4 = 0x03,
+        };
+
+        enum class RDRT_R_XX_NCI_REPORT_TYPE_ENUM : uint8_t
+        {
+            CORRELATION = 0x00,
+            LIKELIHOOD = 0x01
+        };
+
+        enum class RDRT_R_XX_NCI_EVENT_TYPE_ENUM : uint8_t
+        {
+            DEFAULT = 0x00,
+            CORRELATED_HRD_DECLARATION = 0x03,
+            UNCORRELATED_HRD_OR_NO_DECLARATION = 0x06
+        };
+
+        enum class RDRT_R_XX_NCI_STAGE_2_NOT_PERF_ENUM : uint8_t
+        {
+            PERFORMED = 0x00,
+            NOT_PERFORMED = 0x01
+        };
+
+        enum class RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO_ENUM : uint8_t
+        {
+            WAS_NOT_ZERO = 0x00,
+            WAS_ZERO = 0x01
+        };
+
+        enum class RDRT_R_XX_NCI_TGT_DID_NOT_CORREL_ENUM : uint8_t
+        {
+            DID_CORRELATE = 0x00,
+            DID_NOT_CORRELATE = 0x01
+        };
+
+        enum class RDRT_R_XX_NCI_NO_MATCH_TEMPLATE_ENUM : uint8_t
+        {
+            MATCHING_TEMPLATE = 0x00,
+            NO_MATCHING_TEMPLATE = 0x01
+        };
+
+        enum class RDRT_R_XX_NCI_EVENT_DIAGNOSTIC_ENUM : uint8_t
+        {
+            NCI_NOT_PERFORMED = 0x00,
+            NO_TARGETS_DETECTED = 0x01,
+            NO_TARGET_TO_TRACK_CORRELATION = 0x02,
+            DAP_STAGE1_REMOVED_ALL_TEMPLATES = 0x03,
+            DAP_STAGE2_TARGET_QUALITY_E_N_TESTS_FAILED = 0x04,
+            DAP_STAGE2_NO_JEM_DETECTED = 0x05,
+            DAP_STAGE2_PLAUSIBILITY_TESTS_FAILED = 0x06,
+            DAP_STAGE2_DISAMBIGUATION_TESTS_FAILED = 0x07,
+            DAP_STAGE2_CONFIDENCE_FACTOR_OR_CORRELATION_MAX_THRESHOLD_TEST_FAILED = 0x08,
+            DAP_STAGE2_BCF1_TEST_FAILED = 0x09,
+            METHOD_0_TEMPLATE_MATCH_ACHIEVED = 0x0A,
+            DAP_STAGE2_METHOD_1_7_NO_DECLARATION = 0x0B,
+            METHOD_1_7_TEMPLATE_MATCH_ACHIEVED = 0x0C            
+        };
+
+        enum class RDRT_R_XX_SIGMA_VALID_ENUM : uint8_t
+        {
+            INVALID = 0x00,
+            VALID = 0x01
+        };
+
+        //___________DEFAULT_MESSAGE_VALUES______________//
+        // Default values are defined within the ECRS MK II INTERFACE CONTROL DOCUMENT PART 2. Report No:  AP50131645-02
+
+        static constexpr RDRT_XX_TRACK_DATA_COND_ENUM RDRT_XX_TRACK_DATA_COND_DEFAULT{RDRT_XX_TRACK_DATA_COND_ENUM::NO_TRACK};
+        static constexpr RDRT_XX_TRACK_TYPE_ENUM RDRT_XX_TRACK_TYPE_DEFAULT{RDRT_XX_TRACK_TYPE_ENUM::RADAR_TRACK};
+        static constexpr uint8_t RDRT_XX_TRACK_RANK_DEFAULT{0U};
+        static constexpr uint16_t RDRT_XX_TRK_IDENT_DEFAULT{0U};
+        static constexpr uint8_t RDRT_R_XX_RESERVED_DEFAULT{0U};
+        static constexpr RDRT_R_XX_REALM_ENUM RDRT_R_XX_REALM_DEFAULT{RDRT_R_XX_REALM_ENUM::UNKNOWN};
+        static constexpr RDRT_R_XX_TRACK_UPDATE_COUNTER_ENUM RDRT_R_XX_TRACK_UPDATE_COUNTER_DEFAULT {RDRT_R_XX_TRACK_UPDATE_COUNTER_ENUM::UPDATED};
+        static constexpr RDRT_R_XX_DATA_TYPE_ENUM RDRT_R_XX_DATA_TYPE_DEFAULT{RDRT_R_XX_DATA_TYPE_ENUM::NORMAL};
+        static constexpr RDRT_R_XX_LAST_TGT_TYPE_ENUM RDRT_R_XX_LAST_TGT_TYPE_DEFAULT {RDRT_R_XX_LAST_TGT_TYPE_ENUM::PLOT};
+        static constexpr RDRT_R_XX_TYPE_TRANS_CTRL_ENUM RDRT_R_XX_TYPE_TRANS_CTRL_DEFAULT{RDRT_R_XX_TYPE_TRANS_CTRL_ENUM::GLOBAL_TRANS_CONTROL};
+        static constexpr RDRT_R_XX_CLEAR_TO_JAM_ENUM RDRT_R_XX_CLEAR_TO_JAM_DEFAULT{RDRT_R_XX_CLEAR_TO_JAM_ENUM::ALLOWED};
+        static constexpr RDRT_R_XX_JAM_TO_CLEAR_ENUM RDRT_R_XX_JAM_TO_CLEAR_DEFAULT{RDRT_R_XX_JAM_TO_CLEAR_ENUM::ALLOWED};
+        static constexpr RDRT_R_XX_RAPID_ATT_STATUS_ENUM RDRT_R_XX_RAPID_ATT_STATUS_DEFAULT {RDRT_R_XX_RAPID_ATT_STATUS_ENUM::NOT_RAPID};
+        static constexpr bool RDRT_R_XX_PROACT_STATUS_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_CHAFF_DETECTED_DEFAULT{false};
+        static constexpr RDRT_R_XX_GUN_STATUS_ENUM RDRT_R_XX_GUN_STATUS_DEFAULT{RDRT_R_XX_GUN_STATUS_ENUM::NO_GUN};
+        static constexpr bool RDRT_R_XX_RTA_TRACK_ANOMALOUS_DEFAULT{false};
+        static constexpr RDRT_R_XX_TASK_VALUE_CONDITION_ENUM RDRT_R_XX_TASK_VALUE_CONDITION_DEFAULT{RDRT_R_XX_TASK_VALUE_CONDITION_ENUM::NORMAL};
+        static constexpr RDRT_R_XX_JAM_ID_CODE_VALID_ENUM RDRT_R_XX_JAM_ID_CODE_VALID_DEFAULT{RDRT_R_XX_JAM_ID_CODE_VALID_ENUM::INVALID};
+        static constexpr RDRT_R_XX_JAM_ID_CODE_TYPE_1_ENUM RDRT_R_XX_JAM_ID_CODE_TYPE_1_DEFAULT{RDRT_R_XX_JAM_ID_CODE_TYPE_1_ENUM::CONTINUOUS_JAMMING};
+        static constexpr RDRT_R_XX_JAM_ID_CODE_TYPE_2_ENUM RDRT_R_XX_JAM_ID_CODE_TYPE_2_DEFAULT{RDRT_R_XX_JAM_ID_CODE_TYPE_2_ENUM::MAIN_BEAM_JAMMING};
+        static constexpr RDRT_R_XX_JAM_ID_CODE_TYPE_3_ENUM RDRT_R_XX_JAM_ID_CODE_TYPE_3_DEFAULT{RDRT_R_XX_JAM_ID_CODE_TYPE_3_ENUM::JID_TECH1};
+        static constexpr RDRT_R_XX_CONVERGENCE_ENUM RDRT_R_XX_CONVERGENCE_DEFAULT{RDRT_R_XX_CONVERGENCE_ENUM::NOT_CONVERGED};
+        static constexpr RDRT_R_XX_ERB_KR_DERIVED_ENUM RDRT_R_XX_ERB_KR_DERIVED_DEFAULT{RDRT_R_XX_ERB_KR_DERIVED_ENUM::KR_DEFAULT};
+        static constexpr RDRT_R_XX_USING_TS_ENUM RDRT_R_XX_USING_TS_DEFAULT{RDRT_R_XX_USING_TS_ENUM::NOT_USED};
+        static constexpr uint8_t RDRT_R_XX_NO_MISSED_SEQ_VISITS_DEFAULT{0U};
+        static constexpr RDRT_R_XX_MANOEUVRE_CD_ENUM RDRT_R_XX_MANOEUVRE_CD_DEFAULT{RDRT_R_XX_MANOEUVRE_CD_ENUM::NOT_MANOEUVRING};
+        static constexpr RDRT_R_XX_MANOEUVRE_LR_ENUM RDRT_R_XX_MANOEUVRE_LR_DEFAULT{RDRT_R_XX_MANOEUVRE_LR_ENUM::NOT_MANOEUVRING};
+        static constexpr RDRT_R_XX_KR_OWN_MANOEUVRE_REQ_ENUM RDRT_R_XX_KR_OWN_MANOEUVRE_REQ_DEFAULT{RDRT_R_XX_KR_OWN_MANOEUVRE_REQ_ENUM::NO_MANOEUVRE_REQ};
+        static constexpr bool RDRT_R_XX_PAE_EVENT_DEFAULT{false};
+        static constexpr uint8_t RDRT_R_XX_PAE_STS_CODE_DEFAULT{0U};
+        static constexpr double RDRT_R_XX_SIGNAL_TO_NOISE_RATIO_DEFAULT{0.0F}; // Decibels
+        static constexpr RDRT_R_XX_TASK_VALUE_STATUS_ENUM RDRT_R_XX_TASK_VALUE_STATUS_DEFAULT{RDRT_R_XX_TASK_VALUE_STATUS_ENUM::TV_DES_ACHIEVED};
+        static constexpr RDRT_R_XX_REC_TRK_DEL_ENUM RDRT_R_XX_REC_TRK_DEL_DEFAULT{RDRT_R_XX_REC_TRK_DEL_ENUM::NO_DELETION};
+        static constexpr uint16_t RDRT_R_XX_INTI_ID_DEFAULT{0U};
+        static constexpr uint8_t RDRT_R_XX_ERB_MIN_DEFAULT{255U}; // Nautical Miles
+        static constexpr uint8_t RDRT_R_XX_ERB_MAX_DEFAULT{255U}; // Nautical Miles
+        static constexpr uint16_t RDRT_R_XX_PLOT_IDENTIFIER_DEFAULT{0U};
+        static constexpr uint16_t RDRT_R_XX_TRACK_PRIORITY_DEFAULT{0U};
+        static constexpr uint32_t RDRT_R_XX_TASK_IDENT_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_RES_REP_ACTUAL_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_RES_ANT_ACTUAL_DEFAULT{0.0F};
+        static constexpr uint8_t RDRT_R_XX_RES_REP_PRED_MIN_DEFAULT{0U}; // PROVISION ONLY
+        static constexpr uint8_t RDRT_R_XX_RES_ANT_PRED_MIN_DEFAULT{0U}; // PROVISION ONLY
+        static constexpr uint8_t RDRT_R_XX_RES_REP_PRED_DES_DEFAULT{0U}; // PROVISION ONLY
+        static constexpr uint8_t RDRT_R_XX_RES_ANT_PRED_DES_DEFAULT{0U}; // PROVISION ONLY
+        static constexpr uint32_t RDRT_R_XX_TRACK_TIME_TAG_DEFAULT{0U}; // Microseconds
+        static constexpr double RDRT_R_XX_TIME_SINCE_UPDATE_DEFAULT{0U}; // Seconds
+        static constexpr float RDRT_R_XX_TARGET_SIZE_ESTIMATE_DEFAULT{0.0F}; // dBsm
+        static constexpr float RDRT_R_XX_SLANT_RNG_DEFAULT{0.0F}; // Nautical Miles
+        static constexpr double RDRT_R_XX_AZIMUTH_DEFAULT{0.0F}; // Radians
+        static constexpr double RDRT_R_XX_ELEVATION_DEFAULT{0.0F}; // Radians
+        static constexpr float RDRT_R_XX_SLANT_RDOT_DEFAULT{0.0F}; // Knots
+        static constexpr double RDRT_R_XX_AZIMUTH_RATE_DEFAULT{0.0F}; // Radians / Second
+        static constexpr double RDRT_R_XX_ELEVATION_RATE_DEFAULT{0.0F}; //Radians / Second
+        static constexpr double RDRT_R_XX_RNG_ACCEL_DEFAULT{0.0F}; // Meters / Sec2
+        static constexpr double RDRT_R_XX_AZIMUTH_ACCEL_DEFAULT{0.0F}; // Radians / Sec2
+        static constexpr double RDRT_R_XX_ELEVATION_ACCEL_DEFAULT{0.0F}; // Radians / Sec2
+        static constexpr bool RDRT_R_XX_NCI_JEM_AVAILABLE_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_RDI_AVAILABLE_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_HRR_AVAILABLE_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_TECH4_AVAILABLE_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_JEM_ELIGIBLE_DEFAULT{false};
+        static constexpr RDRT_R_XX_NCI_VALID_ENUM RDRT_R_XX_NCI_VALID_DEFAULT{RDRT_R_XX_NCI_VALID_ENUM::INVALID};
+        static constexpr RDRT_R_XX_NCI_TECHNIQUE_ENUM RDRT_R_XX_NCI_TECHNIQUE_DEFAULT{RDRT_R_XX_NCI_TECHNIQUE_ENUM::NCI_JEM};
+        static constexpr RDRT_R_XX_NCI_REPORT_TYPE_ENUM RDRT_R_XX_NCI_REPORT_TYPE_DEFAULT{RDRT_R_XX_NCI_REPORT_TYPE_ENUM::CORRELATION};
+        static constexpr RDRT_R_XX_NCI_EVENT_TYPE_ENUM RDRT_R_XX_NCI_EVENT_TYPE_DEFAULT{RDRT_R_XX_NCI_EVENT_TYPE_ENUM::DEFAULT};
+        static constexpr RDRT_R_XX_NCI_STAGE_2_NOT_PERF_ENUM RDRT_R_XX_NCI_STAGE_2_NOT_PERF_DEFAULT{RDRT_R_XX_NCI_STAGE_2_NOT_PERF_ENUM::NOT_PERFORMED};
+        static constexpr RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO_ENUM RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO_DEFAULT{RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO_ENUM::WAS_ZERO};
+        static constexpr RDRT_R_XX_NCI_TGT_DID_NOT_CORREL_ENUM RDRT_R_XX_NCI_TGT_DID_NOT_CORREL_DEFAULT{RDRT_R_XX_NCI_TGT_DID_NOT_CORREL_ENUM::DID_NOT_CORRELATE};
+        static constexpr RDRT_R_XX_NCI_NO_MATCH_TEMPLATE_ENUM RDRT_R_XX_NCI_NO_MATCH_TEMPLATE_DEFAULT{RDRT_R_XX_NCI_NO_MATCH_TEMPLATE_ENUM::NO_MATCHING_TEMPLATE};
+        static constexpr bool RDRT_R_XX_NCI_DEG_RESULT_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_DEG_JAM_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_DEG_CHAN_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_DEG_EPM_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_DEG_FAULT_DEFAULT{false};
+        static constexpr bool RDRT_R_XX_NCI_DEG_RF_INTEROP_DEFAULT{false};
+        static constexpr RDRT_R_XX_NCI_EVENT_DIAGNOSTIC_ENUM RDRT_R_XX_NCI_EVENT_DIAGNOSTIC_DEFAULT{RDRT_R_XX_NCI_EVENT_DIAGNOSTIC_ENUM::NCI_NOT_PERFORMED};
+        static constexpr uint8_t RDRT_R_XX_NCI_NO_OF_ELEMENTS_DEFAULT{0};
+        static constexpr uint8_t RDRT_R_XX_NCI_CONFIDENCE_DEFAULT{0};
+        static constexpr double RDRT_R_XX_NCI_AZIMUTH_DEFAULT{0.0F};
+        static constexpr double RDRT_R_XX_NCI_ELEVATION_DEFAULT{0.0F};
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_01_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_01_VALUE_DEFAULT{0.0F};
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_02_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_02_VALUE_DEFAULT{0.0F};
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_03_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_03_VALUE_DEFAULT{0.0F};
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_04_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_04_VALUE_DEFAULT{0.0F};        
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_05_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_05_VALUE_DEFAULT{0.0F};
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_06_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_06_VALUE_DEFAULT{0.0F};        
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_07_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_07_VALUE_DEFAULT{0.0F};
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_08_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_08_VALUE_DEFAULT{0.0F};        
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_09_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_09_VALUE_DEFAULT{0.0F};        
+        static constexpr uint8_t RDRT_R_XX_NCI_SPM_REP_10_CODE_DEFAULT{0U};
+        static constexpr float RDRT_R_XX_NCI_SPM_REP_10_VALUE_DEFAULT{0.0F};
+        static constexpr RDRT_R_XX_SIGMA_VALID_ENUM RDRT_R_XX_SIGMA_VALID_DEFAULT{RDRT_R_XX_SIGMA_VALID_ENUM::INVALID};
+        static constexpr double RDRT_R_XX_SIGMA_R_DEFAULT{0.0F}; // Meters
+        static constexpr double RDRT_R_XX_SIGMA_AZ_DEFAULT{0.0F}; // Radians
+        static constexpr double RDRT_R_XX_SIGMA_EL_DEFAULT{0.0F}; // Radians
+        static constexpr double RDRT_R_XX_SIGMA_R_RATE_DEFAULT{0.0F}; // Meters / Second
+        static constexpr double RDRT_R_XX_SIGMA_AZ_RATE_DEFAULT{0.0F}; // Radians / Second
+        static constexpr double RDRT_R_XX_SIGMA_EL_RATE_DEFAULT{0.0F}; // Radians / Second
+        static constexpr double RDRT_R_XX_SIGMA_R_ACCEL_DEFAULT{0.0F}; // Meters / Sec2
+        static constexpr double RDRT_R_XX_SIGMA_AZ_ACCEL_DEFAULT{0.0F}; // Radians / Sec2
+        static constexpr double RDRT_R_XX_SIGMA_EL_ACCEL_DEFAULT{0.0F}; // Radians / Sec2
+        static constexpr float RDRT_R_XX_COV_COEFF_R_AZ_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_R_EL_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_R_RRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_R_AZRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_R_ELRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_AZ_EL_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_AZ_RRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_AZ_AZRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_AZ_ELRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_EL_RRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_EL_AZRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_EL_ELRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_RRATE_AZRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_RRATE_ELRATE_DEFAULT{0.0F};
+        static constexpr float RDRT_R_XX_COV_COEFF_AZRATE_ELRATE_DEFAULT{0.0F};
+
+        // Floating point tolerance
+        static constexpr float  kfFloatingPointTolerance {0.000001F};
+        static constexpr double klFloatingPointTolerance {0.000001L};
+
+        //______________________________________________//
+
+    /**
+    * @brief this topic is a strongly typed one to one mapping of a Rate 1 Track Data Message Track from within the RADAR103_AC-HAT-MESS-1 from
+    * ECRS MK II INTERFACE CONTROL DOCUMENT PART 2. Report No:  AP50131645-02
+    * DRL No:  1.17
+    * Issue: A
+    */
+        struct FastTrackData
+        {
+
+            RDRT_XX_TRACK_DATA_COND_ENUM RDRT_XX_TRACK_DATA_COND{RDRT_XX_TRACK_DATA_COND_DEFAULT};
+            RDRT_XX_TRACK_TYPE_ENUM RDRT_XX_TRACK_TYPE{RDRT_XX_TRACK_TYPE_DEFAULT};
+            uint8_t RDRT_XX_TRACK_RANK{RDRT_XX_TRACK_RANK_DEFAULT};
+            uint16_t RDRT_XX_TRK_IDENT{RDRT_XX_TRK_IDENT_DEFAULT};
+            uint8_t RDRT_R_XX_RESERVED{RDRT_R_XX_RESERVED_DEFAULT};
+            RDRT_R_XX_REALM_ENUM RDRT_R_XX_REALM{RDRT_R_XX_REALM_DEFAULT};
+            RDRT_R_XX_TRACK_UPDATE_COUNTER_ENUM RDRT_R_XX_TRACK_UPDATE_COUNTER{RDRT_R_XX_TRACK_UPDATE_COUNTER_DEFAULT};
+            RDRT_R_XX_DATA_TYPE_ENUM RDRT_R_XX_DATA_TYPE{RDRT_R_XX_DATA_TYPE_DEFAULT};
+            RDRT_R_XX_LAST_TGT_TYPE_ENUM RDRT_R_XX_LAST_TGT_TYPE{RDRT_R_XX_LAST_TGT_TYPE_DEFAULT};
+            RDRT_R_XX_TYPE_TRANS_CTRL_ENUM RDRT_R_XX_TYPE_TRANS_CTRL{RDRT_R_XX_TYPE_TRANS_CTRL_DEFAULT};
+            RDRT_R_XX_CLEAR_TO_JAM_ENUM RDRT_R_XX_CLEAR_TO_JAM{RDRT_R_XX_CLEAR_TO_JAM_DEFAULT};
+            RDRT_R_XX_JAM_TO_CLEAR_ENUM RDRT_R_XX_JAM_TO_CLEAR{RDRT_R_XX_JAM_TO_CLEAR_DEFAULT};
+            RDRT_R_XX_RAPID_ATT_STATUS_ENUM RDRT_R_XX_RAPID_ATT_STATUS{RDRT_R_XX_RAPID_ATT_STATUS_DEFAULT};
+            bool RDRT_R_XX_PROACT_STATUS{RDRT_R_XX_PROACT_STATUS_DEFAULT};
+            bool RDRT_R_XX_CHAFF_DETECTED{RDRT_R_XX_CHAFF_DETECTED_DEFAULT};
+            RDRT_R_XX_GUN_STATUS_ENUM RDRT_R_XX_GUN_STATUS{RDRT_R_XX_GUN_STATUS_DEFAULT}; //2.15
+            bool RDRT_R_XX_RTA_TRACK_ANOMALOUS{RDRT_R_XX_RTA_TRACK_ANOMALOUS_DEFAULT};//3.0
+            RDRT_R_XX_TASK_VALUE_CONDITION_ENUM RDRT_R_XX_TASK_VALUE_CONDITION{RDRT_R_XX_TASK_VALUE_CONDITION_DEFAULT};//3.1
+            RDRT_R_XX_JAM_ID_CODE_VALID_ENUM RDRT_R_XX_JAMMER_ID_CODE_VALID{RDRT_R_XX_JAM_ID_CODE_VALID_DEFAULT};//3.2
+            RDRT_R_XX_JAM_ID_CODE_TYPE_1_ENUM RDRT_R_XX_JAM_ID_CODE_TYPE_1{RDRT_R_XX_JAM_ID_CODE_TYPE_1_DEFAULT};//3.3
+            RDRT_R_XX_JAM_ID_CODE_TYPE_2_ENUM RDRT_R_XX_JAM_ID_CODE_TYPE_2{RDRT_R_XX_JAM_ID_CODE_TYPE_2_DEFAULT};//3.4
+            RDRT_R_XX_JAM_ID_CODE_TYPE_3_ENUM RDRT_R_XX_JAM_ID_CODE_TYPE_3{RDRT_R_XX_JAM_ID_CODE_TYPE_3_DEFAULT};//3.5
+            RDRT_R_XX_CONVERGENCE_ENUM RDRT_R_XX_CONVERGENCE{RDRT_R_XX_CONVERGENCE_DEFAULT};//3.6
+            RDRT_R_XX_ERB_KR_DERIVED_ENUM RDRT_R_XX_ERB_KR_DERIVED{RDRT_R_XX_ERB_KR_DERIVED_DEFAULT};//3.7
+            RDRT_R_XX_USING_TS_ENUM RDRT_R_XX_USING_TS{RDRT_R_XX_USING_TS_DEFAULT};//3.8
+            uint8_t RDRT_R_XX_NO_MISSED_SEQ_VISITS{RDRT_R_XX_NO_MISSED_SEQ_VISITS_DEFAULT};
+            RDRT_R_XX_MANOEUVRE_CD_ENUM RDRT_R_XX_MANOEUVRE_CD{RDRT_R_XX_MANOEUVRE_CD_DEFAULT};//4.0
+            RDRT_R_XX_MANOEUVRE_LR_ENUM RDRT_R_XX_MANOEUVRE_LR{RDRT_R_XX_MANOEUVRE_LR_DEFAULT};//4.2
+            RDRT_R_XX_KR_OWN_MANOEUVRE_REQ_ENUM RDRT_R_XX_KR_OWN_MANOEUVRE_REQ{RDRT_R_XX_KR_OWN_MANOEUVRE_REQ_DEFAULT};//4.4
+            bool RDRT_R_XX_PAE_EVENT{RDRT_R_XX_PAE_EVENT_DEFAULT};
+            uint8_t RDRT_R_XX_PAE_STS_CODE{RDRT_R_XX_PAE_STS_CODE_DEFAULT};
+            SI::SIDecibel RDRT_R_XX_SIGNAL_TO_NOISE_RATIO{RDRT_R_XX_SIGNAL_TO_NOISE_RATIO_DEFAULT};
+            RDRT_R_XX_TASK_VALUE_STATUS_ENUM RDRT_R_XX_TASK_VALUE_STATUS{RDRT_R_XX_TASK_VALUE_STATUS_DEFAULT};
+            RDRT_R_XX_REC_TRK_DEL_ENUM RDRT_R_XX_REC_TRK_DEL{RDRT_R_XX_REC_TRK_DEL_DEFAULT};
+            uint16_t RDRT_R_XX_INTI_ID{RDRT_R_XX_INTI_ID_DEFAULT};
+            uint8_t RDRT_R_XX_ERB_MIN{RDRT_R_XX_ERB_MIN_DEFAULT};
+            uint8_t RDRT_R_XX_ERB_MAX{RDRT_R_XX_ERB_MAX_DEFAULT};
+            uint16_t RDRT_R_XX_PLOT_IDENTIFIER{RDRT_R_XX_PLOT_IDENTIFIER_DEFAULT};
+            uint16_t RDRT_R_XX_TRACK_PRIORITY{RDRT_R_XX_TRACK_PRIORITY_DEFAULT};
+            uint32_t RDRT_R_XX_TASK_IDENT{RDRT_R_XX_TASK_IDENT_DEFAULT};
+            float RDRT_R_XX_RES_REP_ACTUAL{RDRT_R_XX_RES_REP_ACTUAL_DEFAULT};
+            float RDRT_R_XX_RES_ANT_ACTUAL{RDRT_R_XX_RES_ANT_ACTUAL_DEFAULT};
+            uint8_t RDRT_R_XX_RES_REP_PRED_MIN{RDRT_R_XX_RES_REP_PRED_MIN_DEFAULT}; // PROVISION ONLY
+            uint8_t RDRT_R_XX_RES_ANT_PRED_MIN{RDRT_R_XX_RES_ANT_PRED_MIN_DEFAULT}; // PROVISION ONLY
+            uint8_t RDRT_R_XX_RES_REP_PRED_DES{RDRT_R_XX_RES_REP_PRED_DES_DEFAULT}; // PROVISION ONLY
+            uint8_t RDRT_R_XX_RES_ANT_PRED_DES{RDRT_R_XX_RES_ANT_PRED_DES_DEFAULT}; // PROVISION ONLY
+            uint32_t RDRT_R_XX_TRACK_TIME_TAG{RDRT_R_XX_TRACK_TIME_TAG_DEFAULT}; // Microseconds
+            SI::SISecond RDRT_R_XX_TIME_SINCE_UPDATE{RDRT_R_XX_TIME_SINCE_UPDATE_DEFAULT}; // Seconds
+            float RDRT_R_XX_TARGET_SIZE_ESTIMATE{RDRT_R_XX_TARGET_SIZE_ESTIMATE_DEFAULT};
+            float RDRT_R_XX_SLANT_RNG{RDRT_R_XX_SLANT_RNG_DEFAULT};
+            SI::SIRadian RDRT_R_XX_AZIMUTH{RDRT_R_XX_AZIMUTH_DEFAULT}; // Radians
+            SI::SIRadian RDRT_R_XX_ELEVATION{RDRT_R_XX_ELEVATION_DEFAULT}; // Radians
+            float RDRT_R_XX_SLANT_RDOT{RDRT_R_XX_SLANT_RDOT_DEFAULT};
+            SI::SIRadianPerSecond RDRT_R_XX_AZIMUTH_RATE{RDRT_R_XX_AZIMUTH_RATE_DEFAULT}; // Radians / Second
+            SI::SIRadianPerSecond RDRT_R_XX_ELEVATION_RATE{RDRT_R_XX_ELEVATION_RATE_DEFAULT}; // Radians / Second
+            SI::SIMeterPerSecondSquared RDRT_R_XX_RNG_ACCEL{RDRT_R_XX_RNG_ACCEL_DEFAULT}; // Meters / Sec2
+            SI::SIRadianPerSecondSquared RDRT_R_XX_AZIMUTH_ACCEL{RDRT_R_XX_AZIMUTH_ACCEL_DEFAULT}; // Radians / Sec2
+            SI::SIRadianPerSecondSquared RDRT_R_XX_ELEVATION_ACCEL{RDRT_R_XX_ELEVATION_ACCEL_DEFAULT}; // Radians / Sec2
+            bool RDRT_R_XX_NCI_JEM_AVAILABLE{RDRT_R_XX_NCI_JEM_AVAILABLE_DEFAULT};
+            bool RDRT_R_XX_NCI_RDI_AVAILABLE{RDRT_R_XX_NCI_RDI_AVAILABLE_DEFAULT};
+            bool RDRT_R_XX_NCI_HRR_AVAILABLE{RDRT_R_XX_NCI_HRR_AVAILABLE_DEFAULT};
+            bool RDRT_R_XX_NCI_TECH4_AVAILABLE{RDRT_R_XX_NCI_TECH4_AVAILABLE_DEFAULT};
+            bool RDRT_R_XX_NCI_JEM_ELIGIBLE{RDRT_R_XX_NCI_JEM_ELIGIBLE_DEFAULT};
+            RDRT_R_XX_NCI_VALID_ENUM RDRT_R_XX_NCI_VALID{RDRT_R_XX_NCI_VALID_DEFAULT};
+            RDRT_R_XX_NCI_TECHNIQUE_ENUM RDRT_R_XX_NCI_TECHNIQUE{RDRT_R_XX_NCI_TECHNIQUE_DEFAULT};
+            RDRT_R_XX_NCI_REPORT_TYPE_ENUM RDRT_R_XX_NCI_REPORT_TYPE{RDRT_R_XX_NCI_REPORT_TYPE_DEFAULT};
+            RDRT_R_XX_NCI_EVENT_TYPE_ENUM RDRT_R_XX_NCI_EVENT_TYPE{RDRT_R_XX_NCI_EVENT_TYPE_DEFAULT};
+            RDRT_R_XX_NCI_STAGE_2_NOT_PERF_ENUM RDRT_R_XX_NCI_STAGE_2_NOT_PERF{RDRT_R_XX_NCI_STAGE_2_NOT_PERF_DEFAULT};
+            RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO_ENUM RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO{RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO_DEFAULT};
+            RDRT_R_XX_NCI_TGT_DID_NOT_CORREL_ENUM RDRT_R_XX_NCI_TGT_DID_NOT_CORREL{RDRT_R_XX_NCI_TGT_DID_NOT_CORREL_DEFAULT};
+            RDRT_R_XX_NCI_NO_MATCH_TEMPLATE_ENUM RDRT_R_XX_NCI_NO_MATCH_TEMPLATE{RDRT_R_XX_NCI_NO_MATCH_TEMPLATE_DEFAULT};
+            bool RDRT_R_XX_NCI_DEG_RESULT{RDRT_R_XX_NCI_DEG_RESULT_DEFAULT};
+            bool RDRT_R_XX_NCI_DEG_JAM{RDRT_R_XX_NCI_DEG_JAM_DEFAULT};
+            bool RDRT_R_XX_NCI_DEG_CHAN{RDRT_R_XX_NCI_DEG_CHAN_DEFAULT};
+            bool RDRT_R_XX_NCI_DEG_EPM{RDRT_R_XX_NCI_DEG_EPM_DEFAULT};
+            bool RDRT_R_XX_NCI_DEG_FAULT{RDRT_R_XX_NCI_DEG_FAULT_DEFAULT};
+            bool RDRT_R_XX_NCI_DEG_RF_INTEROP{RDRT_R_XX_NCI_DEG_RF_INTEROP_DEFAULT};
+            RDRT_R_XX_NCI_EVENT_DIAGNOSTIC_ENUM RDRT_R_XX_NCI_EVENT_DIAGNOSTIC{RDRT_R_XX_NCI_EVENT_DIAGNOSTIC_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_NO_OF_ELEMENTS{RDRT_R_XX_NCI_NO_OF_ELEMENTS_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_CONFIDENCE{RDRT_R_XX_NCI_CONFIDENCE_DEFAULT};
+            SI::SIRadian RDRT_R_XX_NCI_AZIMUTH{RDRT_R_XX_NCI_AZIMUTH_DEFAULT};
+            SI::SIRadian RDRT_R_XX_NCI_ELEVATION{RDRT_R_XX_NCI_ELEVATION_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_01_CODE{RDRT_R_XX_NCI_SPM_REP_01_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_01_VALUE{RDRT_R_XX_NCI_SPM_REP_01_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_02_CODE{RDRT_R_XX_NCI_SPM_REP_02_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_02_VALUE{RDRT_R_XX_NCI_SPM_REP_02_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_03_CODE{RDRT_R_XX_NCI_SPM_REP_03_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_03_VALUE{RDRT_R_XX_NCI_SPM_REP_03_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_04_CODE{RDRT_R_XX_NCI_SPM_REP_04_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_04_VALUE{RDRT_R_XX_NCI_SPM_REP_04_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_05_CODE{RDRT_R_XX_NCI_SPM_REP_05_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_05_VALUE{RDRT_R_XX_NCI_SPM_REP_05_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_06_CODE{RDRT_R_XX_NCI_SPM_REP_06_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_06_VALUE{RDRT_R_XX_NCI_SPM_REP_06_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_07_CODE{RDRT_R_XX_NCI_SPM_REP_07_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_07_VALUE{RDRT_R_XX_NCI_SPM_REP_07_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_08_CODE{RDRT_R_XX_NCI_SPM_REP_08_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_08_VALUE{RDRT_R_XX_NCI_SPM_REP_08_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_09_CODE{RDRT_R_XX_NCI_SPM_REP_09_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_09_VALUE{RDRT_R_XX_NCI_SPM_REP_09_VALUE_DEFAULT};
+            uint8_t RDRT_R_XX_NCI_SPM_REP_10_CODE{RDRT_R_XX_NCI_SPM_REP_10_CODE_DEFAULT};
+            float RDRT_R_XX_NCI_SPM_REP_10_VALUE{RDRT_R_XX_NCI_SPM_REP_10_VALUE_DEFAULT};
+            RDRT_R_XX_SIGMA_VALID_ENUM RDRT_R_XX_SIGMA_R_VALID{RDRT_R_XX_SIGMA_VALID_DEFAULT};
+            RDRT_R_XX_SIGMA_VALID_ENUM RDRT_R_XX_SIGMA_AZ_VALID{RDRT_R_XX_SIGMA_VALID_DEFAULT};
+            RDRT_R_XX_SIGMA_VALID_ENUM RDRT_R_XX_SIGMA_EL_VALID{RDRT_R_XX_SIGMA_VALID_DEFAULT};
+            RDRT_R_XX_SIGMA_VALID_ENUM RDRT_R_XX_SIGMA_RDOT_VALID{RDRT_R_XX_SIGMA_VALID_DEFAULT};
+            RDRT_R_XX_SIGMA_VALID_ENUM RDRT_R_XX_SIGMA_AZ_RATE_VALID{RDRT_R_XX_SIGMA_VALID_DEFAULT};
+            RDRT_R_XX_SIGMA_VALID_ENUM RDRT_R_XX_SIGMA_EL_RATE_VALID{RDRT_R_XX_SIGMA_VALID_DEFAULT};
+            RDRT_R_XX_SIGMA_VALID_ENUM RDRT_R_XX_SIGMA_ACCEL_VALID{RDRT_R_XX_SIGMA_VALID_DEFAULT};
+            SI::SIMeter RDRT_R_XX_SIGMA_R{RDRT_R_XX_SIGMA_R_DEFAULT}; // Meters
+            SI::SIRadian RDRT_R_XX_SIGMA_AZ{RDRT_R_XX_SIGMA_AZ_DEFAULT}; // Radians
+            SI::SIRadian RDRT_R_XX_SIGMA_EL{RDRT_R_XX_SIGMA_EL_DEFAULT}; // Radians
+            SI::SIMeterPerSecond RDRT_R_XX_SIGMA_R_RATE{RDRT_R_XX_SIGMA_R_RATE_DEFAULT}; // Meters / Second
+            SI::SIRadianPerSecond RDRT_R_XX_SIGMA_AZ_RATE{RDRT_R_XX_SIGMA_AZ_RATE_DEFAULT}; // Radians / Second
+            SI::SIRadianPerSecond RDRT_R_XX_SIGMA_EL_RATE{RDRT_R_XX_SIGMA_EL_RATE_DEFAULT};  // Radians / Second
+            SI::SIMeterPerSecond RDRT_R_XX_SIGMA_R_ACCEL{RDRT_R_XX_SIGMA_R_ACCEL_DEFAULT}; // Meters / Sec2
+            SI::SIRadianPerSecondSquared RDRT_R_XX_SIGMA_AZ_ACCEL{RDRT_R_XX_SIGMA_AZ_ACCEL_DEFAULT}; // Radians / Sec2
+            SI::SIRadianPerSecondSquared RDRT_R_XX_SIGMA_EL_ACCEL{RDRT_R_XX_SIGMA_EL_ACCEL_DEFAULT}; // Radians / Sec2
+            float RDRT_R_XX_COV_COEFF_R_AZ{RDRT_R_XX_COV_COEFF_R_AZ_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_R_EL{RDRT_R_XX_COV_COEFF_R_EL_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_R_RRATE{RDRT_R_XX_COV_COEFF_R_RRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_R_AZRATE{RDRT_R_XX_COV_COEFF_R_AZRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_R_ELRATE{RDRT_R_XX_COV_COEFF_R_ELRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_AZ_EL{RDRT_R_XX_COV_COEFF_AZ_EL_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_AZ_RRATE{RDRT_R_XX_COV_COEFF_AZ_RRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_AZ_AZRATE{RDRT_R_XX_COV_COEFF_AZ_AZRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_AZ_ELRATE{RDRT_R_XX_COV_COEFF_AZ_ELRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_EL_RRATE{RDRT_R_XX_COV_COEFF_EL_RRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_EL_AZRATE{RDRT_R_XX_COV_COEFF_EL_AZRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_EL_ELRATE{RDRT_R_XX_COV_COEFF_EL_ELRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_RRATE_AZRATE{RDRT_R_XX_COV_COEFF_RRATE_AZRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_RRATE_ELRATE{RDRT_R_XX_COV_COEFF_RRATE_ELRATE_DEFAULT};
+            float RDRT_R_XX_COV_COEFF_AZRATE_ELRATE{RDRT_R_XX_COV_COEFF_AZRATE_ELRATE_DEFAULT};
+
+            bool checkIcdDefault() {
+                return
+                RDRT_XX_TRACK_DATA_COND == RDRT_XX_TRACK_DATA_COND_DEFAULT &&
+                RDRT_XX_TRACK_TYPE == RDRT_XX_TRACK_TYPE_DEFAULT &&
+                RDRT_XX_TRACK_RANK == RDRT_XX_TRACK_RANK_DEFAULT &&
+                RDRT_XX_TRK_IDENT == RDRT_XX_TRK_IDENT_DEFAULT &&
+                RDRT_R_XX_RESERVED == RDRT_R_XX_RESERVED_DEFAULT &&
+                RDRT_R_XX_REALM == RDRT_R_XX_REALM_DEFAULT &&
+                RDRT_R_XX_TRACK_UPDATE_COUNTER == RDRT_R_XX_TRACK_UPDATE_COUNTER_DEFAULT &&
+                RDRT_R_XX_DATA_TYPE == RDRT_R_XX_DATA_TYPE_DEFAULT &&
+                RDRT_R_XX_LAST_TGT_TYPE == RDRT_R_XX_LAST_TGT_TYPE_DEFAULT &&
+                RDRT_R_XX_TYPE_TRANS_CTRL == RDRT_R_XX_TYPE_TRANS_CTRL_DEFAULT &&
+                RDRT_R_XX_CLEAR_TO_JAM == RDRT_R_XX_CLEAR_TO_JAM_DEFAULT &&
+                RDRT_R_XX_JAM_TO_CLEAR == RDRT_R_XX_JAM_TO_CLEAR_DEFAULT &&
+                RDRT_R_XX_RAPID_ATT_STATUS == RDRT_R_XX_RAPID_ATT_STATUS_DEFAULT &&
+                RDRT_R_XX_PROACT_STATUS == RDRT_R_XX_PROACT_STATUS_DEFAULT &&
+                RDRT_R_XX_CHAFF_DETECTED == RDRT_R_XX_CHAFF_DETECTED_DEFAULT &&
+                RDRT_R_XX_GUN_STATUS == RDRT_R_XX_GUN_STATUS_DEFAULT && 
+                RDRT_R_XX_RTA_TRACK_ANOMALOUS == RDRT_R_XX_RTA_TRACK_ANOMALOUS_DEFAULT &&
+                RDRT_R_XX_TASK_VALUE_CONDITION == RDRT_R_XX_TASK_VALUE_CONDITION_DEFAULT &&
+                RDRT_R_XX_JAMMER_ID_CODE_VALID == RDRT_R_XX_JAM_ID_CODE_VALID_DEFAULT &&
+                RDRT_R_XX_JAM_ID_CODE_TYPE_1 == RDRT_R_XX_JAM_ID_CODE_TYPE_1_DEFAULT &&
+                RDRT_R_XX_JAM_ID_CODE_TYPE_2 == RDRT_R_XX_JAM_ID_CODE_TYPE_2_DEFAULT &&
+                RDRT_R_XX_JAM_ID_CODE_TYPE_3 == RDRT_R_XX_JAM_ID_CODE_TYPE_3_DEFAULT &&
+                RDRT_R_XX_CONVERGENCE == RDRT_R_XX_CONVERGENCE_DEFAULT &&
+                RDRT_R_XX_ERB_KR_DERIVED == RDRT_R_XX_ERB_KR_DERIVED_DEFAULT &&
+                RDRT_R_XX_USING_TS == RDRT_R_XX_USING_TS_DEFAULT &&
+                RDRT_R_XX_NO_MISSED_SEQ_VISITS == RDRT_R_XX_NO_MISSED_SEQ_VISITS_DEFAULT &&
+                RDRT_R_XX_MANOEUVRE_CD == RDRT_R_XX_MANOEUVRE_CD_DEFAULT &&
+                RDRT_R_XX_MANOEUVRE_LR == RDRT_R_XX_MANOEUVRE_LR_DEFAULT &&
+                RDRT_R_XX_KR_OWN_MANOEUVRE_REQ == RDRT_R_XX_KR_OWN_MANOEUVRE_REQ_DEFAULT &&
+                RDRT_R_XX_PAE_EVENT == RDRT_R_XX_PAE_EVENT_DEFAULT &&
+                RDRT_R_XX_PAE_STS_CODE == RDRT_R_XX_PAE_STS_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_SIGNAL_TO_NOISE_RATIO(), RDRT_R_XX_SIGNAL_TO_NOISE_RATIO_DEFAULT, klFloatingPointTolerance) &&
+                RDRT_R_XX_TASK_VALUE_STATUS == RDRT_R_XX_TASK_VALUE_STATUS_DEFAULT &&
+                RDRT_R_XX_REC_TRK_DEL == RDRT_R_XX_REC_TRK_DEL_DEFAULT &&
+                RDRT_R_XX_INTI_ID == RDRT_R_XX_INTI_ID_DEFAULT &&
+                RDRT_R_XX_ERB_MIN == RDRT_R_XX_ERB_MIN_DEFAULT &&
+                RDRT_R_XX_ERB_MAX == RDRT_R_XX_ERB_MAX_DEFAULT &&
+                RDRT_R_XX_PLOT_IDENTIFIER == RDRT_R_XX_PLOT_IDENTIFIER_DEFAULT &&
+                RDRT_R_XX_TRACK_PRIORITY == RDRT_R_XX_TRACK_PRIORITY_DEFAULT &&
+                RDRT_R_XX_TASK_IDENT == RDRT_R_XX_TASK_IDENT_DEFAULT &&
+                RDRT_R_XX_RES_REP_ACTUAL == RDRT_R_XX_RES_REP_ACTUAL_DEFAULT &&
+                RDRT_R_XX_RES_ANT_ACTUAL == RDRT_R_XX_RES_ANT_ACTUAL_DEFAULT &&
+                RDRT_R_XX_RES_REP_PRED_MIN == RDRT_R_XX_RES_REP_PRED_MIN_DEFAULT && // PROVISION ONLY
+                RDRT_R_XX_RES_ANT_PRED_MIN == RDRT_R_XX_RES_ANT_PRED_MIN_DEFAULT && // PROVISION ONLY
+                RDRT_R_XX_RES_REP_PRED_DES == RDRT_R_XX_RES_REP_PRED_DES_DEFAULT && // PROVISION ONLY
+                RDRT_R_XX_RES_ANT_PRED_DES == RDRT_R_XX_RES_ANT_PRED_DES_DEFAULT && // PROVISION ONLY
+                RDRT_R_XX_TRACK_TIME_TAG == RDRT_R_XX_TRACK_TIME_TAG_DEFAULT && // Microseconds
+                floatChk::AlmostEqual(RDRT_R_XX_TIME_SINCE_UPDATE(), RDRT_R_XX_TIME_SINCE_UPDATE_DEFAULT, klFloatingPointTolerance) && // Seconds
+                RDRT_R_XX_TARGET_SIZE_ESTIMATE == RDRT_R_XX_TARGET_SIZE_ESTIMATE_DEFAULT &&
+                RDRT_R_XX_SLANT_RNG == RDRT_R_XX_SLANT_RNG_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_AZIMUTH(), RDRT_R_XX_AZIMUTH_DEFAULT, klFloatingPointTolerance) && // Radians
+                floatChk::AlmostEqual(RDRT_R_XX_ELEVATION(), RDRT_R_XX_ELEVATION_DEFAULT, klFloatingPointTolerance) && // Radians
+                RDRT_R_XX_SLANT_RDOT == RDRT_R_XX_SLANT_RDOT_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_AZIMUTH_RATE(), RDRT_R_XX_AZIMUTH_RATE_DEFAULT, klFloatingPointTolerance) && // Radians / Second
+                floatChk::AlmostEqual(RDRT_R_XX_ELEVATION_RATE(), RDRT_R_XX_ELEVATION_RATE_DEFAULT, klFloatingPointTolerance) && // Radians / Second
+                floatChk::AlmostEqual(RDRT_R_XX_RNG_ACCEL(), RDRT_R_XX_RNG_ACCEL_DEFAULT, klFloatingPointTolerance) && // Meters / Sec2
+                floatChk::AlmostEqual(RDRT_R_XX_AZIMUTH_ACCEL(), RDRT_R_XX_AZIMUTH_ACCEL_DEFAULT, klFloatingPointTolerance) && // Radians / Sec2
+                floatChk::AlmostEqual(RDRT_R_XX_ELEVATION_ACCEL(), RDRT_R_XX_ELEVATION_ACCEL_DEFAULT, klFloatingPointTolerance) && // Radians / Sec2
+                RDRT_R_XX_NCI_JEM_AVAILABLE == RDRT_R_XX_NCI_JEM_AVAILABLE_DEFAULT &&
+                RDRT_R_XX_NCI_RDI_AVAILABLE == RDRT_R_XX_NCI_RDI_AVAILABLE_DEFAULT &&
+                RDRT_R_XX_NCI_HRR_AVAILABLE == RDRT_R_XX_NCI_HRR_AVAILABLE_DEFAULT &&
+                RDRT_R_XX_NCI_TECH4_AVAILABLE == RDRT_R_XX_NCI_TECH4_AVAILABLE_DEFAULT &&
+                RDRT_R_XX_NCI_JEM_ELIGIBLE == RDRT_R_XX_NCI_JEM_ELIGIBLE_DEFAULT &&
+                RDRT_R_XX_NCI_VALID == RDRT_R_XX_NCI_VALID_DEFAULT &&
+                RDRT_R_XX_NCI_TECHNIQUE == RDRT_R_XX_NCI_TECHNIQUE_DEFAULT &&
+                RDRT_R_XX_NCI_REPORT_TYPE == RDRT_R_XX_NCI_REPORT_TYPE_DEFAULT &&
+                RDRT_R_XX_NCI_EVENT_TYPE == RDRT_R_XX_NCI_EVENT_TYPE_DEFAULT &&
+                RDRT_R_XX_NCI_STAGE_2_NOT_PERF == RDRT_R_XX_NCI_STAGE_2_NOT_PERF_DEFAULT &&
+                RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO == RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO_DEFAULT &&
+                RDRT_R_XX_NCI_TGT_DID_NOT_CORREL == RDRT_R_XX_NCI_TGT_DID_NOT_CORREL_DEFAULT &&
+                RDRT_R_XX_NCI_NO_MATCH_TEMPLATE == RDRT_R_XX_NCI_NO_MATCH_TEMPLATE_DEFAULT &&
+                RDRT_R_XX_NCI_DEG_RESULT == RDRT_R_XX_NCI_DEG_RESULT_DEFAULT &&
+                RDRT_R_XX_NCI_DEG_JAM == RDRT_R_XX_NCI_DEG_JAM_DEFAULT &&
+                RDRT_R_XX_NCI_DEG_CHAN == RDRT_R_XX_NCI_DEG_CHAN_DEFAULT &&
+                RDRT_R_XX_NCI_DEG_EPM == RDRT_R_XX_NCI_DEG_EPM_DEFAULT &&
+                RDRT_R_XX_NCI_DEG_FAULT == RDRT_R_XX_NCI_DEG_FAULT_DEFAULT &&
+                RDRT_R_XX_NCI_DEG_RF_INTEROP == RDRT_R_XX_NCI_DEG_RF_INTEROP_DEFAULT &&
+                RDRT_R_XX_NCI_EVENT_DIAGNOSTIC == RDRT_R_XX_NCI_EVENT_DIAGNOSTIC_DEFAULT &&
+                RDRT_R_XX_NCI_NO_OF_ELEMENTS == RDRT_R_XX_NCI_NO_OF_ELEMENTS_DEFAULT &&
+                RDRT_R_XX_NCI_CONFIDENCE == RDRT_R_XX_NCI_CONFIDENCE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_AZIMUTH(), RDRT_R_XX_NCI_AZIMUTH_DEFAULT, klFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_ELEVATION(), RDRT_R_XX_NCI_ELEVATION_DEFAULT, klFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_01_CODE == RDRT_R_XX_NCI_SPM_REP_01_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_01_VALUE, RDRT_R_XX_NCI_SPM_REP_01_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_02_CODE == RDRT_R_XX_NCI_SPM_REP_02_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_02_VALUE, RDRT_R_XX_NCI_SPM_REP_02_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_03_CODE == RDRT_R_XX_NCI_SPM_REP_03_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_03_VALUE, RDRT_R_XX_NCI_SPM_REP_03_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_04_CODE == RDRT_R_XX_NCI_SPM_REP_04_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_04_VALUE, RDRT_R_XX_NCI_SPM_REP_04_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_05_CODE == RDRT_R_XX_NCI_SPM_REP_05_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_05_VALUE, RDRT_R_XX_NCI_SPM_REP_05_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_06_CODE == RDRT_R_XX_NCI_SPM_REP_06_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_06_VALUE, RDRT_R_XX_NCI_SPM_REP_06_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_07_CODE == RDRT_R_XX_NCI_SPM_REP_07_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_07_VALUE, RDRT_R_XX_NCI_SPM_REP_07_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_08_CODE == RDRT_R_XX_NCI_SPM_REP_08_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_08_VALUE, RDRT_R_XX_NCI_SPM_REP_08_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_09_CODE == RDRT_R_XX_NCI_SPM_REP_09_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_09_VALUE, RDRT_R_XX_NCI_SPM_REP_09_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_NCI_SPM_REP_10_CODE == RDRT_R_XX_NCI_SPM_REP_10_CODE_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_10_VALUE, RDRT_R_XX_NCI_SPM_REP_10_VALUE_DEFAULT, kfFloatingPointTolerance) &&
+                RDRT_R_XX_SIGMA_R_VALID == RDRT_R_XX_SIGMA_VALID_DEFAULT &&
+                RDRT_R_XX_SIGMA_AZ_VALID == RDRT_R_XX_SIGMA_VALID_DEFAULT &&
+                RDRT_R_XX_SIGMA_EL_VALID == RDRT_R_XX_SIGMA_VALID_DEFAULT &&
+                RDRT_R_XX_SIGMA_RDOT_VALID == RDRT_R_XX_SIGMA_VALID_DEFAULT &&
+                RDRT_R_XX_SIGMA_AZ_RATE_VALID == RDRT_R_XX_SIGMA_VALID_DEFAULT &&
+                RDRT_R_XX_SIGMA_EL_RATE_VALID == RDRT_R_XX_SIGMA_VALID_DEFAULT &&
+                RDRT_R_XX_SIGMA_ACCEL_VALID == RDRT_R_XX_SIGMA_VALID_DEFAULT &&
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_R(), RDRT_R_XX_SIGMA_R_DEFAULT, klFloatingPointTolerance) && // Meters
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_AZ(), RDRT_R_XX_SIGMA_AZ_DEFAULT, klFloatingPointTolerance) && // Radians
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_EL(), RDRT_R_XX_SIGMA_EL_DEFAULT, klFloatingPointTolerance) && // Radians
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_R_RATE(), RDRT_R_XX_SIGMA_R_RATE_DEFAULT, klFloatingPointTolerance) && // Meters / Second
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_AZ_RATE(), RDRT_R_XX_SIGMA_AZ_RATE_DEFAULT, klFloatingPointTolerance) && // Radians / Second
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_EL_RATE(), RDRT_R_XX_SIGMA_EL_RATE_DEFAULT, klFloatingPointTolerance) &&  // Radians / Second
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_R_ACCEL(), RDRT_R_XX_SIGMA_R_ACCEL_DEFAULT, klFloatingPointTolerance) && // Meters / Sec2
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_AZ_ACCEL(), RDRT_R_XX_SIGMA_AZ_ACCEL_DEFAULT, klFloatingPointTolerance) && // Radians / Sec2
+                floatChk::AlmostEqual(RDRT_R_XX_SIGMA_EL_ACCEL(), RDRT_R_XX_SIGMA_EL_ACCEL_DEFAULT, klFloatingPointTolerance) && // Radians / Sec2
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_AZ, RDRT_R_XX_COV_COEFF_R_AZ_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_EL, RDRT_R_XX_COV_COEFF_R_EL_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_RRATE, RDRT_R_XX_COV_COEFF_R_RRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_AZRATE, RDRT_R_XX_COV_COEFF_R_AZRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_ELRATE, RDRT_R_XX_COV_COEFF_R_ELRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZ_EL, RDRT_R_XX_COV_COEFF_AZ_EL_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZ_RRATE, RDRT_R_XX_COV_COEFF_AZ_RRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZ_AZRATE, RDRT_R_XX_COV_COEFF_AZ_AZRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZ_ELRATE, RDRT_R_XX_COV_COEFF_AZ_ELRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_EL_RRATE, RDRT_R_XX_COV_COEFF_EL_RRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_EL_AZRATE, RDRT_R_XX_COV_COEFF_EL_AZRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_EL_ELRATE, RDRT_R_XX_COV_COEFF_EL_ELRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_RRATE_AZRATE, RDRT_R_XX_COV_COEFF_RRATE_AZRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_RRATE_ELRATE, RDRT_R_XX_COV_COEFF_RRATE_ELRATE_DEFAULT, kfFloatingPointTolerance) &&
+                floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZRATE_ELRATE, RDRT_R_XX_COV_COEFF_AZRATE_ELRATE_DEFAULT, kfFloatingPointTolerance);
+
+            }
+
+            bool operator==(const FastTrackData& other) const
+            {
+                return RDRT_XX_TRACK_DATA_COND == other.RDRT_XX_TRACK_DATA_COND &&
+                    RDRT_XX_TRACK_TYPE == other.RDRT_XX_TRACK_TYPE &&
+                    RDRT_XX_TRACK_RANK == other.RDRT_XX_TRACK_RANK &&
+                    RDRT_XX_TRK_IDENT == other.RDRT_XX_TRK_IDENT &&
+                    RDRT_R_XX_RESERVED == other.RDRT_R_XX_RESERVED &&
+                    RDRT_R_XX_REALM == other.RDRT_R_XX_REALM &&
+                    RDRT_R_XX_TRACK_UPDATE_COUNTER == other.RDRT_R_XX_TRACK_UPDATE_COUNTER &&
+                    RDRT_R_XX_DATA_TYPE == other.RDRT_R_XX_DATA_TYPE &&
+                    RDRT_R_XX_LAST_TGT_TYPE == other.RDRT_R_XX_LAST_TGT_TYPE &&
+                    RDRT_R_XX_TYPE_TRANS_CTRL == other.RDRT_R_XX_TYPE_TRANS_CTRL &&
+                    RDRT_R_XX_CLEAR_TO_JAM == other.RDRT_R_XX_CLEAR_TO_JAM &&
+                    RDRT_R_XX_JAM_TO_CLEAR == other.RDRT_R_XX_JAM_TO_CLEAR &&
+                    RDRT_R_XX_RAPID_ATT_STATUS == other.RDRT_R_XX_RAPID_ATT_STATUS &&
+                    RDRT_R_XX_PROACT_STATUS == other.RDRT_R_XX_PROACT_STATUS &&
+                    RDRT_R_XX_CHAFF_DETECTED == other.RDRT_R_XX_CHAFF_DETECTED &&
+                    RDRT_R_XX_GUN_STATUS == other.RDRT_R_XX_GUN_STATUS &&
+                    RDRT_R_XX_RTA_TRACK_ANOMALOUS == other.RDRT_R_XX_RTA_TRACK_ANOMALOUS &&
+                    RDRT_R_XX_TASK_VALUE_CONDITION == other.RDRT_R_XX_TASK_VALUE_CONDITION &&
+                    RDRT_R_XX_JAMMER_ID_CODE_VALID == other.RDRT_R_XX_JAMMER_ID_CODE_VALID &&
+                    RDRT_R_XX_JAM_ID_CODE_TYPE_1 == other.RDRT_R_XX_JAM_ID_CODE_TYPE_1 &&
+                    RDRT_R_XX_JAM_ID_CODE_TYPE_2 == other.RDRT_R_XX_JAM_ID_CODE_TYPE_2 &&
+                    RDRT_R_XX_JAM_ID_CODE_TYPE_3 == other.RDRT_R_XX_JAM_ID_CODE_TYPE_3 &&
+                    RDRT_R_XX_CONVERGENCE == other.RDRT_R_XX_CONVERGENCE &&
+                    RDRT_R_XX_ERB_KR_DERIVED == other.RDRT_R_XX_ERB_KR_DERIVED &&
+                    RDRT_R_XX_USING_TS == other.RDRT_R_XX_USING_TS &&
+                    RDRT_R_XX_NO_MISSED_SEQ_VISITS == other.RDRT_R_XX_NO_MISSED_SEQ_VISITS &&
+                    RDRT_R_XX_MANOEUVRE_CD == other.RDRT_R_XX_MANOEUVRE_CD &&
+                    RDRT_R_XX_MANOEUVRE_LR == other.RDRT_R_XX_MANOEUVRE_LR &&
+                    RDRT_R_XX_KR_OWN_MANOEUVRE_REQ == other.RDRT_R_XX_KR_OWN_MANOEUVRE_REQ &&
+                    RDRT_R_XX_PAE_EVENT == other.RDRT_R_XX_PAE_EVENT &&
+                    RDRT_R_XX_PAE_STS_CODE == other.RDRT_R_XX_PAE_STS_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGNAL_TO_NOISE_RATIO(), other.RDRT_R_XX_SIGNAL_TO_NOISE_RATIO(), klFloatingPointTolerance) &&
+                    RDRT_R_XX_TASK_VALUE_STATUS == other.RDRT_R_XX_TASK_VALUE_STATUS &&
+                    RDRT_R_XX_REC_TRK_DEL == other.RDRT_R_XX_REC_TRK_DEL &&
+                    RDRT_R_XX_INTI_ID == other.RDRT_R_XX_INTI_ID &&
+                    RDRT_R_XX_ERB_MIN == other.RDRT_R_XX_ERB_MIN &&
+                    RDRT_R_XX_ERB_MAX == other.RDRT_R_XX_ERB_MAX &&
+                    RDRT_R_XX_PLOT_IDENTIFIER == other.RDRT_R_XX_PLOT_IDENTIFIER &&
+                    RDRT_R_XX_TRACK_PRIORITY == other.RDRT_R_XX_TRACK_PRIORITY &&
+                    RDRT_R_XX_TASK_IDENT == other.RDRT_R_XX_TASK_IDENT &&
+                    floatChk::AlmostEqual(RDRT_R_XX_RES_REP_ACTUAL, other.RDRT_R_XX_RES_REP_ACTUAL, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_RES_ANT_ACTUAL, other.RDRT_R_XX_RES_ANT_ACTUAL, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_RES_REP_PRED_MIN == other.RDRT_R_XX_RES_REP_PRED_MIN && 
+                    RDRT_R_XX_RES_ANT_PRED_MIN == other.RDRT_R_XX_RES_ANT_PRED_MIN && 
+                    RDRT_R_XX_RES_REP_PRED_DES == other.RDRT_R_XX_RES_REP_PRED_DES && 
+                    RDRT_R_XX_RES_ANT_PRED_DES == other.RDRT_R_XX_RES_ANT_PRED_DES && 
+                    RDRT_R_XX_TRACK_TIME_TAG == other.RDRT_R_XX_TRACK_TIME_TAG && 
+                    floatChk::AlmostEqual(RDRT_R_XX_TIME_SINCE_UPDATE(), other.RDRT_R_XX_TIME_SINCE_UPDATE(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_TARGET_SIZE_ESTIMATE, other.RDRT_R_XX_TARGET_SIZE_ESTIMATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SLANT_RNG, other.RDRT_R_XX_SLANT_RNG, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_AZIMUTH(), other.RDRT_R_XX_AZIMUTH(), klFloatingPointTolerance) && 
+                    floatChk::AlmostEqual(RDRT_R_XX_ELEVATION(), other.RDRT_R_XX_ELEVATION(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SLANT_RDOT, other.RDRT_R_XX_SLANT_RDOT, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_AZIMUTH_RATE(), other.RDRT_R_XX_AZIMUTH_RATE(), klFloatingPointTolerance) && 
+                    floatChk::AlmostEqual(RDRT_R_XX_ELEVATION_RATE(), other.RDRT_R_XX_ELEVATION_RATE(), klFloatingPointTolerance) && 
+                    floatChk::AlmostEqual(RDRT_R_XX_RNG_ACCEL(), other.RDRT_R_XX_RNG_ACCEL(), klFloatingPointTolerance) && 
+                    floatChk::AlmostEqual(RDRT_R_XX_AZIMUTH_ACCEL(), other.RDRT_R_XX_AZIMUTH_ACCEL(), klFloatingPointTolerance) && 
+                    floatChk::AlmostEqual(RDRT_R_XX_ELEVATION_ACCEL(), other.RDRT_R_XX_ELEVATION_ACCEL(), klFloatingPointTolerance) && 
+                    RDRT_R_XX_NCI_JEM_AVAILABLE == other.RDRT_R_XX_NCI_JEM_AVAILABLE &&
+                    RDRT_R_XX_NCI_RDI_AVAILABLE == other.RDRT_R_XX_NCI_RDI_AVAILABLE &&
+                    RDRT_R_XX_NCI_HRR_AVAILABLE == other.RDRT_R_XX_NCI_HRR_AVAILABLE &&
+                    RDRT_R_XX_NCI_TECH4_AVAILABLE == other.RDRT_R_XX_NCI_TECH4_AVAILABLE &&
+                    RDRT_R_XX_NCI_JEM_ELIGIBLE == other.RDRT_R_XX_NCI_JEM_ELIGIBLE &&
+                    RDRT_R_XX_NCI_VALID == other.RDRT_R_XX_NCI_VALID &&
+                    RDRT_R_XX_NCI_TECHNIQUE == other.RDRT_R_XX_NCI_TECHNIQUE &&
+                    RDRT_R_XX_NCI_REPORT_TYPE == other.RDRT_R_XX_NCI_REPORT_TYPE &&
+                    RDRT_R_XX_NCI_EVENT_TYPE == other.RDRT_R_XX_NCI_EVENT_TYPE &&
+                    RDRT_R_XX_NCI_STAGE_2_NOT_PERF == other.RDRT_R_XX_NCI_STAGE_2_NOT_PERF &&
+                    RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO == other.RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO &&
+                    RDRT_R_XX_NCI_TGT_DID_NOT_CORREL == other.RDRT_R_XX_NCI_TGT_DID_NOT_CORREL &&
+                    RDRT_R_XX_NCI_NO_MATCH_TEMPLATE == other.RDRT_R_XX_NCI_NO_MATCH_TEMPLATE &&
+                    RDRT_R_XX_NCI_DEG_RESULT == other.RDRT_R_XX_NCI_DEG_RESULT &&
+                    RDRT_R_XX_NCI_DEG_JAM == other.RDRT_R_XX_NCI_DEG_JAM &&
+                    RDRT_R_XX_NCI_DEG_CHAN == other.RDRT_R_XX_NCI_DEG_CHAN &&
+                    RDRT_R_XX_NCI_DEG_EPM == other.RDRT_R_XX_NCI_DEG_EPM &&
+                    RDRT_R_XX_NCI_DEG_FAULT == other.RDRT_R_XX_NCI_DEG_FAULT &&
+                    RDRT_R_XX_NCI_DEG_RF_INTEROP == other.RDRT_R_XX_NCI_DEG_RF_INTEROP &&
+                    RDRT_R_XX_NCI_EVENT_DIAGNOSTIC == other.RDRT_R_XX_NCI_EVENT_DIAGNOSTIC &&
+                    RDRT_R_XX_NCI_NO_OF_ELEMENTS == other.RDRT_R_XX_NCI_NO_OF_ELEMENTS &&
+                    RDRT_R_XX_NCI_CONFIDENCE == other.RDRT_R_XX_NCI_CONFIDENCE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_AZIMUTH(), other.RDRT_R_XX_NCI_AZIMUTH(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_ELEVATION(), other.RDRT_R_XX_NCI_ELEVATION(), klFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_01_CODE == other.RDRT_R_XX_NCI_SPM_REP_01_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_01_VALUE, other.RDRT_R_XX_NCI_SPM_REP_01_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_02_CODE == other.RDRT_R_XX_NCI_SPM_REP_02_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_02_VALUE, other.RDRT_R_XX_NCI_SPM_REP_02_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_03_CODE == other.RDRT_R_XX_NCI_SPM_REP_03_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_03_VALUE, other.RDRT_R_XX_NCI_SPM_REP_03_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_04_CODE == other.RDRT_R_XX_NCI_SPM_REP_04_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_04_VALUE, other.RDRT_R_XX_NCI_SPM_REP_04_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_05_CODE == other.RDRT_R_XX_NCI_SPM_REP_05_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_05_VALUE, other.RDRT_R_XX_NCI_SPM_REP_05_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_06_CODE == other.RDRT_R_XX_NCI_SPM_REP_06_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_06_VALUE, other.RDRT_R_XX_NCI_SPM_REP_06_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_07_CODE == other.RDRT_R_XX_NCI_SPM_REP_07_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_07_VALUE, other.RDRT_R_XX_NCI_SPM_REP_07_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_08_CODE == other.RDRT_R_XX_NCI_SPM_REP_08_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_08_VALUE, other.RDRT_R_XX_NCI_SPM_REP_08_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_09_CODE == other.RDRT_R_XX_NCI_SPM_REP_09_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_09_VALUE, other.RDRT_R_XX_NCI_SPM_REP_09_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_NCI_SPM_REP_10_CODE == other.RDRT_R_XX_NCI_SPM_REP_10_CODE &&
+                    floatChk::AlmostEqual(RDRT_R_XX_NCI_SPM_REP_10_VALUE, other.RDRT_R_XX_NCI_SPM_REP_10_VALUE, kfFloatingPointTolerance) &&
+                    RDRT_R_XX_SIGMA_R_VALID == other.RDRT_R_XX_SIGMA_R_VALID &&
+                    RDRT_R_XX_SIGMA_AZ_VALID == other.RDRT_R_XX_SIGMA_AZ_VALID &&
+                    RDRT_R_XX_SIGMA_EL_VALID == other.RDRT_R_XX_SIGMA_EL_VALID &&
+                    RDRT_R_XX_SIGMA_RDOT_VALID == other.RDRT_R_XX_SIGMA_RDOT_VALID &&
+                    RDRT_R_XX_SIGMA_AZ_RATE_VALID == other.RDRT_R_XX_SIGMA_AZ_RATE_VALID &&
+                    RDRT_R_XX_SIGMA_EL_RATE_VALID == other.RDRT_R_XX_SIGMA_EL_RATE_VALID &&
+                    RDRT_R_XX_SIGMA_ACCEL_VALID == other.RDRT_R_XX_SIGMA_ACCEL_VALID &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_R(), other.RDRT_R_XX_SIGMA_R(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_AZ(), other.RDRT_R_XX_SIGMA_AZ(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_EL(), other.RDRT_R_XX_SIGMA_EL(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_R_RATE(), other.RDRT_R_XX_SIGMA_R_RATE(), klFloatingPointTolerance) && 
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_AZ_RATE(), other.RDRT_R_XX_SIGMA_AZ_RATE(), klFloatingPointTolerance) && 
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_EL_RATE(), other.RDRT_R_XX_SIGMA_EL_RATE(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_R_ACCEL(), other.RDRT_R_XX_SIGMA_R_ACCEL(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_AZ_ACCEL(), other.RDRT_R_XX_SIGMA_AZ_ACCEL(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_SIGMA_EL_ACCEL(), other.RDRT_R_XX_SIGMA_EL_ACCEL(), klFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_AZ, other.RDRT_R_XX_COV_COEFF_R_AZ, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_EL, other.RDRT_R_XX_COV_COEFF_R_EL, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_RRATE, other.RDRT_R_XX_COV_COEFF_R_RRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_AZRATE, other.RDRT_R_XX_COV_COEFF_R_AZRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_R_ELRATE, other.RDRT_R_XX_COV_COEFF_R_ELRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZ_EL, other.RDRT_R_XX_COV_COEFF_AZ_EL, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZ_RRATE, other.RDRT_R_XX_COV_COEFF_AZ_RRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZ_AZRATE, other.RDRT_R_XX_COV_COEFF_AZ_AZRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZ_ELRATE, other.RDRT_R_XX_COV_COEFF_AZ_ELRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_EL_RRATE, other.RDRT_R_XX_COV_COEFF_EL_RRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_EL_AZRATE, other.RDRT_R_XX_COV_COEFF_EL_AZRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_EL_ELRATE, other.RDRT_R_XX_COV_COEFF_EL_ELRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_RRATE_AZRATE, other.RDRT_R_XX_COV_COEFF_RRATE_AZRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_RRATE_ELRATE, other.RDRT_R_XX_COV_COEFF_RRATE_ELRATE, kfFloatingPointTolerance) &&
+                    floatChk::AlmostEqual(RDRT_R_XX_COV_COEFF_AZRATE_ELRATE, other.RDRT_R_XX_COV_COEFF_AZRATE_ELRATE, kfFloatingPointTolerance);
+            }
+
+            bool operator!=(const FastTrackData& other) const
+            {
+                return !(*this == other);
+            }
+
+
+            /**
+            * @brief Serialise function required for communications
+            */
+            template <class T>
+            void Serialise(T &archive)
+            {
+                double doubleRDRT_R_XX_SIGNAL_TO_NOISE_RATIO {RDRT_R_XX_SIGNAL_TO_NOISE_RATIO()};
+                double doubleRDRT_R_XX_TIME_SINCE_UPDATE {RDRT_R_XX_TIME_SINCE_UPDATE()};
+                double doubleRDRT_R_XX_AZIMUTH {RDRT_R_XX_AZIMUTH()};
+                double doubleRDRT_R_XX_ELEVATION {RDRT_R_XX_ELEVATION()};
+                double doubleRDRT_R_XX_AZIMUTH_RATE{ RDRT_R_XX_AZIMUTH_RATE()};
+                double doubleRDRT_R_XX_ELEVATION_RATE {RDRT_R_XX_ELEVATION_RATE()};
+                double doubleRDRT_R_XX_RNG_ACCEL{RDRT_R_XX_RNG_ACCEL()};
+                double doubleRDRT_R_XX_AZIMUTH_ACCEL {RDRT_R_XX_AZIMUTH_ACCEL()};
+                double doubleRDRT_R_XX_ELEVATION_ACCEL{RDRT_R_XX_ELEVATION_ACCEL()};
+                double doubleRDRT_R_XX_NCI_AZIMUTH{RDRT_R_XX_NCI_AZIMUTH()};
+                double doubleRDRT_R_XX_NCI_ELEVATION{RDRT_R_XX_NCI_ELEVATION()};
+                double doubleRDRT_R_XX_SIGMA_R {RDRT_R_XX_SIGMA_R()};
+                double doubleRDRT_R_XX_SIGMA_AZ {RDRT_R_XX_SIGMA_AZ()};
+                double doubleRDRT_R_XX_SIGMA_EL {RDRT_R_XX_SIGMA_EL()};
+                double doubleRDRT_R_XX_SIGMA_R_RATE {RDRT_R_XX_SIGMA_R_RATE()};
+                double doubleRDRT_R_XX_SIGMA_AZ_RATE {RDRT_R_XX_SIGMA_AZ_RATE()};
+                double doubleRDRT_R_XX_SIGMA_EL_RATE{RDRT_R_XX_SIGMA_EL_RATE()};
+                double doubleRDRT_R_XX_SIGMA_R_ACCEL{RDRT_R_XX_SIGMA_R_ACCEL()};
+                double doubleRDRT_R_XX_SIGMA_AZ_ACCEL{RDRT_R_XX_SIGMA_AZ_ACCEL()};
+                double doubleRDRT_R_XX_SIGMA_EL_ACCEL{RDRT_R_XX_SIGMA_EL_ACCEL()};
+
+                archive.Serialise(RDRT_XX_TRACK_DATA_COND, "RDRT_XX_TRACK_DATA_COND");
+                archive.Serialise(RDRT_XX_TRACK_TYPE, "RDRT_XX_TRACK_TYPE");
+                archive.Serialise(RDRT_XX_TRACK_RANK, "RDRT_XX_TRACK_RANK");
+                archive.Serialise(RDRT_XX_TRK_IDENT, "RDRT_XX_TRK_IDENT");
+                archive.Serialise(RDRT_R_XX_RESERVED, "RDRT_R_XX_RESERVED");
+                archive.Serialise(RDRT_R_XX_REALM, "RDRT_R_XX_REALM");
+                archive.Serialise(RDRT_R_XX_TRACK_UPDATE_COUNTER, "RDRT_R_XX_TRACK_UPDATE_COUNTER");
+                archive.Serialise(RDRT_R_XX_DATA_TYPE, "RDRT_R_XX_DATA_TYPE");
+                archive.Serialise(RDRT_R_XX_LAST_TGT_TYPE, "RDRT_R_XX_LAST_TGT_TYPE");
+                archive.Serialise(RDRT_R_XX_TYPE_TRANS_CTRL, "RDRT_R_XX_TYPE_TRANS_CTRL");
+                archive.Serialise(RDRT_R_XX_CLEAR_TO_JAM, "RDRT_R_XX_CLEAR_TO_JAM");
+                archive.Serialise(RDRT_R_XX_JAM_TO_CLEAR, "RDRT_R_XX_JAM_TO_CLEAR");
+                archive.Serialise(RDRT_R_XX_RAPID_ATT_STATUS, "RDRT_R_XX_RAPID_ATT_STATUS");
+                archive.Serialise(RDRT_R_XX_PROACT_STATUS, "RDRT_R_XX_PROACT_STATUS");
+                archive.Serialise(RDRT_R_XX_CHAFF_DETECTED, "RDRT_R_XX_CHAFF_DETECTED");
+                archive.Serialise(RDRT_R_XX_GUN_STATUS, "RDRT_R_XX_GUN_STATUS"); //2.15
+                archive.Serialise(RDRT_R_XX_RTA_TRACK_ANOMALOUS, "RDRT_R_XX_RTA_TRACK_ANOMALOUS");//3.0
+                archive.Serialise(RDRT_R_XX_TASK_VALUE_CONDITION, "RDRT_R_XX_TASK_VALUE_CONDITION");//3.1
+                archive.Serialise(RDRT_R_XX_JAMMER_ID_CODE_VALID, "RDRT_R_XX_JAMMER_ID_CODE_VALID");//3.2
+                archive.Serialise(RDRT_R_XX_JAM_ID_CODE_TYPE_1, "RDRT_R_XX_JAM_ID_CODE_TYPE_1");//3.3
+                archive.Serialise(RDRT_R_XX_JAM_ID_CODE_TYPE_2, "RDRT_R_XX_JAM_ID_CODE_TYPE_2");//3.4
+                archive.Serialise(RDRT_R_XX_JAM_ID_CODE_TYPE_3, "RDRT_R_XX_JAM_ID_CODE_TYPE_3");//3.5
+                archive.Serialise(RDRT_R_XX_CONVERGENCE, "RDRT_R_XX_CONVERGENCE");//3.6
+                archive.Serialise(RDRT_R_XX_ERB_KR_DERIVED, "RDRT_R_XX_ERB_KR_DERIVED");//3.7
+                archive.Serialise(RDRT_R_XX_USING_TS, "RDRT_R_XX_USING_TS");//3.8
+                archive.Serialise(RDRT_R_XX_NO_MISSED_SEQ_VISITS, "RDRT_R_XX_NO_MISSED_SEQ_VISITS");
+                archive.Serialise(RDRT_R_XX_MANOEUVRE_CD, "RDRT_R_XX_MANOEUVRE_CD");//4.0
+                archive.Serialise(RDRT_R_XX_MANOEUVRE_LR, "RDRT_R_XX_MANOEUVRE_LR");//4.2
+                archive.Serialise(RDRT_R_XX_KR_OWN_MANOEUVRE_REQ, "RDRT_R_XX_KR_OWN_MANOEUVRE_REQ");//4.4
+                archive.Serialise(RDRT_R_XX_PAE_EVENT, "RDRT_R_XX_PAE_EVENT");
+                archive.Serialise(RDRT_R_XX_PAE_STS_CODE, "RDRT_R_XX_PAE_STS_CODE");
+                archive.Serialise(doubleRDRT_R_XX_SIGNAL_TO_NOISE_RATIO, "RDRT_R_XX_SIGNAL_TO_NOISE_RATIO");
+                archive.Serialise(RDRT_R_XX_TASK_VALUE_STATUS, "RDRT_R_XX_TASK_VALUE_STATUS");
+                archive.Serialise(RDRT_R_XX_REC_TRK_DEL, "RDRT_R_XX_REC_TRK_DEL");
+                archive.Serialise(RDRT_R_XX_INTI_ID, "RDRT_R_XX_INTI_ID");
+                archive.Serialise(RDRT_R_XX_ERB_MIN, "RDRT_R_XX_ERB_MIN");
+                archive.Serialise(RDRT_R_XX_ERB_MAX, "RDRT_R_XX_ERB_MAX");
+                archive.Serialise(RDRT_R_XX_PLOT_IDENTIFIER, "RDRT_R_XX_PLOT_IDENTIFIER");
+                archive.Serialise(RDRT_R_XX_TRACK_PRIORITY, "RDRT_R_XX_TRACK_PRIORITY");
+                archive.Serialise(RDRT_R_XX_TASK_IDENT, "RDRT_R_XX_TASK_IDENT");
+                archive.Serialise(RDRT_R_XX_RES_REP_ACTUAL, "RDRT_R_XX_RES_REP_ACTUAL");
+                archive.Serialise(RDRT_R_XX_RES_ANT_ACTUAL, "RDRT_R_XX_RES_ANT_ACTUAL");
+                archive.Serialise(RDRT_R_XX_RES_REP_PRED_MIN, "RDRT_R_XX_RES_REP_PRED_MIN");
+                archive.Serialise(RDRT_R_XX_RES_ANT_PRED_MIN, "RDRT_R_XX_RES_ANT_PRED_MIN");
+                archive.Serialise(RDRT_R_XX_RES_REP_PRED_DES, "RDRT_R_XX_RES_REP_PRED_DES");
+                archive.Serialise(RDRT_R_XX_RES_ANT_PRED_DES, "RDRT_R_XX_RES_ANT_PRED_DES");
+                archive.Serialise(RDRT_R_XX_TRACK_TIME_TAG, "RDRT_R_XX_TRACK_TIME_TAG");
+                archive.Serialise(doubleRDRT_R_XX_TIME_SINCE_UPDATE, "RDRT_R_XX_TIME_SINCE_UPDATE");
+                archive.Serialise(RDRT_R_XX_TARGET_SIZE_ESTIMATE, "RDRT_R_XX_TARGET_SIZE_ESTIMATE");
+                archive.Serialise(RDRT_R_XX_SLANT_RNG, "RDRT_R_XX_SLANT_RNG");
+                archive.Serialise(doubleRDRT_R_XX_AZIMUTH, "RDRT_R_XX_AZIMUTH");
+                archive.Serialise(doubleRDRT_R_XX_ELEVATION, "RDRT_R_XX_ELEVATION");
+                archive.Serialise(RDRT_R_XX_SLANT_RDOT, "RDRT_R_XX_SLANT_RDOT");
+                archive.Serialise(doubleRDRT_R_XX_AZIMUTH_RATE, "RDRT_R_XX_AZIMUTH_RATE"); 
+                archive.Serialise(doubleRDRT_R_XX_ELEVATION_RATE, "RDRT_R_XX_ELEVATION_RATE"); 
+                archive.Serialise(doubleRDRT_R_XX_RNG_ACCEL, "RDRT_R_XX_RNG_ACCEL"); 
+                archive.Serialise(doubleRDRT_R_XX_AZIMUTH_ACCEL, "RDRT_R_XX_AZIMUTH_ACCEL"); 
+                archive.Serialise(doubleRDRT_R_XX_ELEVATION_ACCEL, "RDRT_R_XX_ELEVATION_ACCEL"); 
+                archive.Serialise(RDRT_R_XX_NCI_JEM_AVAILABLE, "RDRT_R_XX_NCI_JEM_AVAILABLE");
+                archive.Serialise(RDRT_R_XX_NCI_RDI_AVAILABLE, "RDRT_R_XX_NCI_RDI_AVAILABLE");
+                archive.Serialise(RDRT_R_XX_NCI_HRR_AVAILABLE, "RDRT_R_XX_NCI_HRR_AVAILABLE");
+                archive.Serialise(RDRT_R_XX_NCI_TECH4_AVAILABLE, "RDRT_R_XX_NCI_TECH4_AVAILABLE");
+                archive.Serialise(RDRT_R_XX_NCI_JEM_ELIGIBLE, "RDRT_R_XX_NCI_JEM_ELIGIBLE");
+                archive.Serialise(RDRT_R_XX_NCI_VALID, "RDRT_R_XX_NCI_VALID");
+                archive.Serialise(RDRT_R_XX_NCI_TECHNIQUE, "RDRT_R_XX_NCI_TECHNIQUE");
+                archive.Serialise(RDRT_R_XX_NCI_REPORT_TYPE, "RDRT_R_XX_NCI_REPORT_TYPE");
+                archive.Serialise(RDRT_R_XX_NCI_EVENT_TYPE, "RDRT_R_XX_NCI_EVENT_TYPE");
+                archive.Serialise(RDRT_R_XX_NCI_STAGE_2_NOT_PERF, "RDRT_R_XX_NCI_STAGE_2_NOT_PERF");
+                archive.Serialise(RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO, "RDRT_R_XX_NCI_TGT_QUAL_WAS_ZERO");
+                archive.Serialise(RDRT_R_XX_NCI_TGT_DID_NOT_CORREL, "RDRT_R_XX_NCI_TGT_DID_NOT_CORREL");
+                archive.Serialise(RDRT_R_XX_NCI_NO_MATCH_TEMPLATE, "RDRT_R_XX_NCI_NO_MATCH_TEMPLATE");
+                archive.Serialise(RDRT_R_XX_NCI_DEG_RESULT, "RDRT_R_XX_NCI_DEG_RESULT");
+                archive.Serialise(RDRT_R_XX_NCI_DEG_JAM, "RDRT_R_XX_NCI_DEG_JAM");
+                archive.Serialise(RDRT_R_XX_NCI_DEG_CHAN, "RDRT_R_XX_NCI_DEG_CHAN");
+                archive.Serialise(RDRT_R_XX_NCI_DEG_EPM, "RDRT_R_XX_NCI_DEG_EPM");
+                archive.Serialise(RDRT_R_XX_NCI_DEG_FAULT, "RDRT_R_XX_NCI_DEG_FAULT");
+                archive.Serialise(RDRT_R_XX_NCI_DEG_RF_INTEROP, "RDRT_R_XX_NCI_DEG_RF_INTEROP");
+                archive.Serialise(RDRT_R_XX_NCI_EVENT_DIAGNOSTIC, "RDRT_R_XX_NCI_EVENT_DIAGNOSTIC");
+                archive.Serialise(RDRT_R_XX_NCI_NO_OF_ELEMENTS, "RDRT_R_XX_NCI_NO_OF_ELEMENTS");
+                archive.Serialise(RDRT_R_XX_NCI_CONFIDENCE, "RDRT_R_XX_NCI_CONFIDENCE");
+                archive.Serialise(doubleRDRT_R_XX_NCI_AZIMUTH, "RDRT_R_XX_NCI_AZIMUTH");
+                archive.Serialise(doubleRDRT_R_XX_NCI_ELEVATION, "RDRT_R_XX_NCI_ELEVATION");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_01_CODE, "RDRT_R_XX_NCI_SPM_REP_01_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_01_VALUE, "RDRT_R_XX_NCI_SPM_REP_01_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_02_CODE, "RDRT_R_XX_NCI_SPM_REP_02_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_02_VALUE, "RDRT_R_XX_NCI_SPM_REP_02_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_03_CODE, "RDRT_R_XX_NCI_SPM_REP_03_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_03_VALUE, "RDRT_R_XX_NCI_SPM_REP_03_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_04_CODE, "RDRT_R_XX_NCI_SPM_REP_04_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_04_VALUE, "RDRT_R_XX_NCI_SPM_REP_04_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_05_CODE, "RDRT_R_XX_NCI_SPM_REP_05_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_05_VALUE, "RDRT_R_XX_NCI_SPM_REP_05_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_06_CODE, "RDRT_R_XX_NCI_SPM_REP_06_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_06_VALUE, "RDRT_R_XX_NCI_SPM_REP_06_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_07_CODE, "RDRT_R_XX_NCI_SPM_REP_07_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_07_VALUE, "RDRT_R_XX_NCI_SPM_REP_07_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_08_CODE, "RDRT_R_XX_NCI_SPM_REP_08_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_08_VALUE, "RDRT_R_XX_NCI_SPM_REP_08_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_09_CODE, "RDRT_R_XX_NCI_SPM_REP_09_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_09_VALUE, "RDRT_R_XX_NCI_SPM_REP_09_VALUE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_10_CODE, "RDRT_R_XX_NCI_SPM_REP_10_CODE");
+                archive.Serialise(RDRT_R_XX_NCI_SPM_REP_10_VALUE, "RDRT_R_XX_NCI_SPM_REP_10_VALUE");
+                archive.Serialise(RDRT_R_XX_SIGMA_R_VALID, "RDRT_R_XX_SIGMA_R_VALID");
+                archive.Serialise(RDRT_R_XX_SIGMA_AZ_VALID, "RDRT_R_XX_SIGMA_AZ_VALID");
+                archive.Serialise(RDRT_R_XX_SIGMA_EL_VALID, "RDRT_R_XX_SIGMA_EL_VALID");
+                archive.Serialise(RDRT_R_XX_SIGMA_RDOT_VALID, "RDRT_R_XX_SIGMA_RDOT_VALID");
+                archive.Serialise(RDRT_R_XX_SIGMA_AZ_RATE_VALID, "RDRT_R_XX_SIGMA_AZ_RATE_VALID");
+                archive.Serialise(RDRT_R_XX_SIGMA_EL_RATE_VALID, "RDRT_R_XX_SIGMA_EL_RATE_VALID");
+                archive.Serialise(RDRT_R_XX_SIGMA_ACCEL_VALID, "RDRT_R_XX_SIGMA_ACCEL_VALID");
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_R, "RDRT_R_XX_SIGMA_R"); 
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_AZ, "RDRT_R_XX_SIGMA_AZ"); 
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_EL, "RDRT_R_XX_SIGMA_EL"); 
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_R_RATE, "RDRT_R_XX_SIGMA_R_RATE");  
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_AZ_RATE, "RDRT_R_XX_SIGMA_AZ_RATE");  
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_EL_RATE, "RDRT_R_XX_SIGMA_EL_RATE");  
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_R_ACCEL, "RDRT_R_XX_SIGMA_R_ACCEL");  
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_AZ_ACCEL, "RDRT_R_XX_SIGMA_AZ_ACCEL");  
+                archive.Serialise(doubleRDRT_R_XX_SIGMA_EL_ACCEL, "RDRT_R_XX_SIGMA_EL_ACCEL");  
+                archive.Serialise(RDRT_R_XX_COV_COEFF_R_AZ, "RDRT_R_XX_COV_COEFF_R_AZ");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_R_EL, "RDRT_R_XX_COV_COEFF_R_EL");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_R_RRATE, "RDRT_R_XX_COV_COEFF_R_RRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_R_AZRATE, "RDRT_R_XX_COV_COEFF_R_AZRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_R_ELRATE, "RDRT_R_XX_COV_COEFF_R_ELRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_AZ_EL, "RDRT_R_XX_COV_COEFF_AZ_EL");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_AZ_RRATE, "RDRT_R_XX_COV_COEFF_AZ_RRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_AZ_AZRATE, "RDRT_R_XX_COV_COEFF_AZ_AZRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_AZ_ELRATE, "RDRT_R_XX_COV_COEFF_AZ_ELRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_EL_RRATE, "RDRT_R_XX_COV_COEFF_EL_RRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_EL_AZRATE, "RDRT_R_XX_COV_COEFF_EL_AZRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_EL_ELRATE, "RDRT_R_XX_COV_COEFF_EL_ELRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_RRATE_AZRATE, "RDRT_R_XX_COV_COEFF_RRATE_AZRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_RRATE_ELRATE, "RDRT_R_XX_COV_COEFF_RRATE_ELRATE");
+                archive.Serialise(RDRT_R_XX_COV_COEFF_AZRATE_ELRATE, "RDRT_R_XX_COV_COEFF_AZRATE_ELRATE");
+
+                RDRT_R_XX_SIGNAL_TO_NOISE_RATIO = doubleRDRT_R_XX_SIGNAL_TO_NOISE_RATIO;
+                RDRT_R_XX_TIME_SINCE_UPDATE = doubleRDRT_R_XX_TIME_SINCE_UPDATE;
+                RDRT_R_XX_AZIMUTH = doubleRDRT_R_XX_AZIMUTH;
+                RDRT_R_XX_ELEVATION = doubleRDRT_R_XX_ELEVATION;
+                RDRT_R_XX_AZIMUTH_RATE = doubleRDRT_R_XX_AZIMUTH_RATE;
+                RDRT_R_XX_ELEVATION_RATE = doubleRDRT_R_XX_ELEVATION_RATE;
+                RDRT_R_XX_RNG_ACCEL = doubleRDRT_R_XX_RNG_ACCEL;
+                RDRT_R_XX_AZIMUTH_ACCEL = doubleRDRT_R_XX_AZIMUTH_ACCEL;
+                RDRT_R_XX_ELEVATION_ACCEL = doubleRDRT_R_XX_ELEVATION_ACCEL;
+                RDRT_R_XX_NCI_AZIMUTH = doubleRDRT_R_XX_NCI_AZIMUTH;
+                RDRT_R_XX_NCI_ELEVATION = doubleRDRT_R_XX_NCI_ELEVATION;
+                RDRT_R_XX_SIGMA_R = doubleRDRT_R_XX_SIGMA_R;
+                RDRT_R_XX_SIGMA_AZ = doubleRDRT_R_XX_SIGMA_AZ;
+                RDRT_R_XX_SIGMA_EL = doubleRDRT_R_XX_SIGMA_EL;
+                RDRT_R_XX_SIGMA_R_RATE = doubleRDRT_R_XX_SIGMA_R_RATE;
+                RDRT_R_XX_SIGMA_AZ_RATE = doubleRDRT_R_XX_SIGMA_AZ_RATE;
+                RDRT_R_XX_SIGMA_EL_RATE = doubleRDRT_R_XX_SIGMA_EL_RATE;
+                RDRT_R_XX_SIGMA_R_ACCEL = doubleRDRT_R_XX_SIGMA_R_ACCEL;
+                RDRT_R_XX_SIGMA_AZ_ACCEL = doubleRDRT_R_XX_SIGMA_AZ_ACCEL;
+                RDRT_R_XX_SIGMA_EL_ACCEL = doubleRDRT_R_XX_SIGMA_EL_ACCEL;
+            }
+
+            LCA_TOPIC("FastTrackData", 1, 0)
+        };
+
+    } // namespace FastTrackData
+
+} // namespace Topics
+
+#endif
