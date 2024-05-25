@@ -1,0 +1,13 @@
+{
+  "ci_ready": "True",
+  "build_slave_required": "clangBuild",
+  "containers": [
+    {
+      "container_name": "SingleBuild",
+      "container_logging": "Console",
+      "container_compiler": "Clang-Linux",
+      "container_variant": "Debug",
+      "container_build_params": "-DCMAKE_CXX_STANDARD=14"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "ci_ready": "False",
+  "build_slave_required": "windriverBuild",
+  "containers": [
+    {
+      "container_name": "SingleBuild",
+      "container_logging": "min",
+      "container_compiler": "windriver",
+      "container_variant": "Debug",
+      "container_build_params": "-DCMAKE_CXX_STANDARD=14"
+    }
+  ]
+}
