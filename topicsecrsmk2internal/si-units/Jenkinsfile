@@ -1,0 +1,43 @@
+pipeline {
+    agent { label "cmake" }
+    stages {
+
+      stage('Checkout') {
+         steps {
+            echo "Checking out code from ${env.GIT_BRANCH} (commit: ${env.GIT_COMMIT}) under job: ${env.JOB_NAME}, build number: ${env.BUILD_NUMBER}, change ID: ${env.CHANGE_ID}"
+         }
+      }
+
+       stage('Build') {
+         steps {
+               echo 'Building SI unit library'
+               cmake arguments: '..', installation: 'Default', workingDir: 'Build'
+               cmake arguments: '--build .', installation: 'Default', workingDir: 'Build'             
+         }
+      }
+      stage('Test') {
+         steps {
+               echo 'Running CTest..'
+               ctest (arguments: '-C Debug', ignoredExitCodes: '8', installation: 'Default', workingDir: 'Build') 
+               sleep(15) //sleep here so that the xml files are 100% "ready" for consumption
+               junit testResults:'**/results/*.xml'
+               script {
+                  currentBuild.rawBuild.@result = hudson.model.Result.SUCCESS
+               }
+               
+            }
+      }
+      stage('Coverage') {
+         steps {
+            echo "Running code coverage ${env.WORKSPACE}"
+             //1 - Generate coverage reports against our generated unit tests
+             //2 - Compare the output coverage report against our codebase
+             //3 - Publish the merged coverage report to Jenkins
+            bat "System/Common/Scripts/RunOpenCppCoverage.cmd build-server"
+            step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])            
+         }
+      }
+
+    }
+
+} 
