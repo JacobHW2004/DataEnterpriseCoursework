@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  commandchecker:
+    image: commandchecker
+    build:
+      context: .
+      dockerfile: ./Dockerfile
