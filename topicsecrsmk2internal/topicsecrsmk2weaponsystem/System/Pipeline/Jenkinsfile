@@ -1,0 +1,27 @@
+node("master")
+{
+  polyspace_home = "${env.POLYSPACE_DESKTOP_PATH}"
+  withEnv(["PHOENIX_VERSION=v3.1.1", "EXPORTER_VERSION=develop", "POLYSPACE_LATEST_PATH=${polyspace_home}"])
+  {
+    entrypoints = load "${env.PHOENIX_LIBRARIES}\\${env.PHOENIX_VERSION}\\Jenkins\\entrypoints.groovy"
+    def runUnitTests = false // Optional: If this parameter is omitted, it defaults to true.
+
+		entrypoints.checkoutCode()
+    entrypoints.cleanGeneratedFiles()
+    entrypoints.runPipelineBuild("",runUnitTests)
+
+		//Param1: polyspaceExcludes, Param2: polyspaceIncludes, Param3: additionalOptions
+		//Param4: uploadToAccess, Param5: accessParentProject, Param6: accessChildProject
+		//Param7: server, Param8: resultsPath, Param9: format
+		entrypoints.performBugFinderAnalysis(
+			"", "polyspaceincludes.json", "BugFinderAdditionalOptions.txt",
+			false, "SharedDeliverableCode", "TopicsEcrsMk2WeaponSystem", false, "BugFinder", "HTML")
+
+		entrypoints.generateDocumentation("TopicsEcrsMk2WeaponSystem", "doxygenincludes.txt")
+    entrypoints.copyDocumentationToWebServer("TopicsEcrsMk2WeaponSystem")
+		
+    if (env.BRANCH_NAME == "develop") {
+			entrypoints.copyDocumentationToWebServer("TopicsEcrsMk2WeaponSystem")
+    }
+  }
+}
